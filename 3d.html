@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+
+    <script>
+    const canvas = document.querySelector("canvas")
+    const c = canvas.getContext("2d")
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+
+    c.fillStyle = "black"
+
+
+let kx = canvas.width/2
+let ky = canvas.height/2
+let grid = 40
+let margin = 10000
+let yLeft = []
+let yRight = []
+let xTop = []
+let xBot = []
+
+
+
+for(i=0; i<canvas.height/grid*100; i+=2){
+    yLeft[i] = [-margin, i*grid]
+    yRight[i] = [canvas.width+margin, i*grid]
+    yLeft[i+1] = [-margin, -i*grid]
+    yRight[i+1] = [canvas.width+margin, -i*grid]
+}
+for(i=0; i<canvas.width/grid*100; i+=2){
+    xTop[i] = [i*grid, -margin]
+    xBot[i] = [i*grid, canvas.height+margin]
+    xTop[i+1] = [-i*grid, -margin]
+    xBot[i+1] = [-i*grid, canvas.height+margin]
+}
+function drawLines(){
+    c.beginPath()
+    c.fillStyle = "red"
+    c.arc(kx, ky, 8, 0, 2*Math.PI)
+    c.fill()
+    c.closePath()
+
+    for(i=0; i<xTop.length; i++){
+        c.beginPath()
+        c.moveTo(xTop[i][1]+kx,xTop[i][0]+ky)
+        c.lineTo(xBot[i][1]+kx,xBot[i][0]+ky)
+        c.strokeStyle = "black"
+        c.stroke()
+    }
+    for(i=0; i<yLeft.length; i++){
+        c.beginPath()
+        c.moveTo(yLeft[i][1]+kx,yLeft[i][0]+ky)
+        c.lineTo(yRight[i][1]+kx,yRight[i][0]+ky)
+        c.strokeStyle = "black"
+        c.stroke()
+    }
+}
+    const matmul = (m, v) => [v[0]*m[0][0]+v[1]*m[0][1], v[0]*m[1][0]+v[1]*m[1][1]]
+    let matrix = [
+        [Math.cos(0.01), -Math.sin(0.01)],
+        [Math.sin(0.01), Math.cos(0.01)]
+    ]
+    function rotate(){
+    xTop = xTop.map(arr => matmul(matrix, arr))
+    xBot = xBot.map(arr => matmul(matrix, arr))
+    yLeft = yLeft.map(arr => matmul(matrix, arr))
+    yRight = yRight.map(arr => matmul(matrix, arr))
+    drawLines()
+    }
+    function loop(){
+        requestAnimationFrame(loop)
+        c.clearRect(0, 0, canvas.width, canvas.height)
+        rotate()
+    rectpos = matmul(matrix, rectpos)
+    c.fillStyle = "blue"
+    c.fillRect(kx+rectpos[0], ky+rectpos[1], 20, 20)
+    }
+    let rectpos = [170, -100]
+    loop()
+
+    
+    
+
+
+    
+    </script>
+</body>
+</html>
