@@ -86,6 +86,33 @@ function drawLines(){
     let rectpos = [170, -100]
     loop()
 
+
+    let shear = [
+        [1, 1],
+        [0, 1]
+    ]
+    let shear2 = [
+        [1, -1],
+        [0, 1]
+    ]
+    window.addEventListener("keydown", e=> {
+        console.log("hei")
+        if(e.keyCode == 37){
+            xTop = xTop.map(arr => matmul(shear, arr))
+            xBot = xBot.map(arr => matmul(shear, arr))
+            yLeft = yLeft.map(arr => matmul(shear, arr))
+            yRight = yRight.map(arr => matmul(shear, arr))
+            drawLines()
+        }
+        else if(e.keyCode == 39){
+            xTop = xTop.map(arr => matmul(shear2, arr))
+            xBot = xBot.map(arr => matmul(shear2, arr))
+            yLeft = yLeft.map(arr => matmul(shear2, arr))
+            yRight = yRight.map(arr => matmul(shear2, arr))
+            drawLines()
+        }
+    })
+
     
     
 

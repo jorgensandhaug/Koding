@@ -1,0 +1,64 @@
+<body>
+    <br>
+    <br>
+    <br>
+    <div></div>
+        <canvas></canvas>
+        <script>
+        const canvas = document.querySelector("canvas")
+        const c = canvas.getContext("2d")
+        canvas.width = window.innerWidth-20
+        canvas.height = window.innerHeight-20
+
+        const div = document.querySelector("div")
+
+        let timeSteps = 10000;
+        let digits = 8;
+        let count = 0;
+        
+        let a = {
+            w: 40, h: 40,
+            x: 300, y: canvas.height/2-40,
+            vel: -2/timeSteps, m: Math.pow(100, digits-1)
+        }
+        let b = {
+            w: 10, h: 10,
+            x: 100, y: canvas.height/2-20,
+            vel: 0, m: 1
+        }
+
+        
+
+        function update(){
+            a.x += a.vel
+            b.x += b.vel
+            if(a.x <= b.x+b.w){ collide(a, b) ; count ++ }
+            if(b.x <= 0){ b.vel = -b.vel ; count++ }
+            
+        }
+
+        function collide(r1, r2){
+            old1 = r1.vel;
+            old2 = r2.vel;
+            r1.vel = (2*r2.m*old2 + old1*(r1.m-r2.m))/(r1.m+r2.m)
+            r2.vel = (2*r1.m*old1 + old2*(r2.m-r1.m))/(r1.m+r2.m)
+        }
+
+        function draw(ob){
+            c.fillStyle = "red"
+            c.fillRect(ob.x, ob.y, ob.w, ob.h)
+        }
+        
+        function loop(){
+            for(let i = 0; i< timeSteps; i++){ update() }
+            requestAnimationFrame(loop)
+        }
+        loop()
+
+        setInterval(()=>{
+            div.innerHTML = count
+        }, 1000)
+        
+        
+        </script>  
+</body>

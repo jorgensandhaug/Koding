@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+    const canvas = document.querySelector("canvas")
+    const c = canvas.getContext("2d")
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+    const len = 200
+    let snorpos = [0, len]
+    
+
+    const g = 0.01
+
+    const magnitude = vec => Math.sqrt(Math.pow(vec[0], 2) + Math.pow(vec[1], 2))
+
+    function drawBall(){
+        c.beginPath()
+        c.fillStyle = "red"
+        c.arc(snorpos[0] + canvas.width/2, snorpos[1]+ canvas.height/2, 10, 0, 2*Math.PI)
+        c.fill()
+        c.closePath()
+    }
+    function drawSnor(){
+        c.beginPath()
+        c.strokeStyle = "black"
+        c.lineWidth = 3
+        c.moveTo(canvas.width/2, canvas.height/2)
+        c.lineTo(snorpos[0] + canvas.width/2, snorpos[1] + canvas.height/2)
+        c.stroke()
+        c.closePath()
+    }
+    let phi = Math.PI/2
+    let vel = 0
+    function loop(){
+        requestAnimationFrame(loop)
+        c.fillStyle = "grey"
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        update()
+        drawBall()
+        drawSnor()
+    }
+    let acc
+    function update(){
+        acc = -Math.sin(phi)*g
+        vel+=acc
+        phi+=vel
+        snorpos = [Math.cos(phi+Math.PI/2)*len, Math.sin(phi+Math.PI/2)*len]
+    }
+    loop()
+
+
+
+    
+
+    
+    
+
+    
+    
+
+
+    
+    
+    </script>    
+</body>
+</html>

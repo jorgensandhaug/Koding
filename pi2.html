@@ -1,0 +1,7 @@
+let sum = 4
+let state = true;
+for(let i = 3; i < 1000000000000; i+=2){
+    if(state){ sum-= 4/i; state = false}
+    else{ sum+= 4/i; state = true}
+}
+console.log(sum)
