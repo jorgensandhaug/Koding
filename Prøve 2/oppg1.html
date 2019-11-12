@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+    h1{
+        font-size: 30px;
+        font-family: monospace;
+    }
+    .res{
+        font-family: monospace;
+        font-size: 30px;
+        position: absolute;
+        top: 450px;
+        left: 450px;
+    }
+    </style>
+</head>
+<body>
+    <h1>Hvilket bilde er tatt i Oslo?</h1>
+    <div>
+        <img src="paris.jpg">
+        <img src="kl.jpg">
+        <img src="ny.jpg">
+        <img src="london.jpg">
+        <img src="oslo.jpg">
+    </div>
+    <div class="res"></div>
+    <script>
+
+        //henter inn de elementene jeg trenger
+    const bilder = document.querySelectorAll("img")
+    const oslo = bilder[bilder.length-1]
+    const res = document.querySelector(".res")
+
+
+        //lager to funksjoner red og green som jeg skal bruke når bildene blir trykket på
+    function red(e){
+        e.target.style.border = "3px solid red"
+        res.innerHTML = "Nei og nei. Du tar feil"
+    }
+    function green(e){
+        e.target.style.border = "3px solid rgb(0, 255, 0)"
+        res.innerHTML = "Bra jobba. Du gjettet riktig"
+    }
+    //legger til eventlisteners for alle bildene untatt oslo, funksjonen red gjør at bildet for en rød ramme og du får en melding om feil gjettet
+    for(let i = 0; i < bilder.length-1; i++){
+        bilder[i].addEventListener("click", red)
+    }
+    //legger til eventlistener for oslo, funksjonen green gjør at bildet får grønn ramme og vinnermelding kommer opp
+    oslo.addEventListener("click", green)
+
+
+    </script>
+</body>
+</html>
