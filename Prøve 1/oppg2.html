@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <style media="screen">
+      #para{
+        color: red;
+        background: grey
+      }
+    </style>
+    <title></title>
+  </head>
+  <body>
+
+    <div class="div">
+
+
+        <p id="para"></p>
+        <div id="div1">
+
+        </div>
+    </div>
+    <script type="text/javascript">
+
+
+      let image;
+      let p = document.getElementById("para");
+      let div = document.getElementById("div1");
+
+      let volumKule = (r) => (4*Math.pow(r, 3)*Math.PI)/3;
+
+
+
+
+      let radius = prompt("skriv inn radius");
+
+      let volum = volumKule(radius).toFixed(2);
+
+      if(volum>=50){image = "<img src = 'storkule.jpg'>"}
+      else if(volum <= 25){image = "<img src = 'litenkule.jpg'>"}
+      else{image = "<img src = 'middelskule.jpg'>"}
+
+      p.innerHTML = "Volumet for kula er " + volum + " liter "
+      div.innerHTML = image
+
+    </script>
+
+  </body>
+</html>
