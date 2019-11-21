@@ -36,6 +36,7 @@
       
     <canvas></canvas>
     <script>
+    //henter elementer fra html
     const canvas = document.querySelector("canvas")
     const c = canvas.getContext("2d")
     canvas.width = window.innerWidth-40
@@ -43,6 +44,7 @@
     const radio1 = document.getElementById("radio1")
     const radio2 = document.getElementById("radio2")
     const sel = document.querySelector("select")
+    //lagrer informasjonen i en array med objekter
     const arr = [
         {yr:2002, prom:9631, hast:9863, size:0},
         {yr:2003, prom:8593, hast:12217, size:0},
@@ -52,6 +54,8 @@
         {yr:2007, prom:8534, hast:18010, size:0}
     
     ]
+
+    //finner den største verdien, og definerer størrelsen på de andre utifra det
     let big
     function newBig(){
         let biggest = 0
@@ -63,12 +67,16 @@
     }
     newBig()
     
+
+    //funksjon for å tegne oppgave a og b
+    //venstresiden av canvas
     function drawLeft(){
         c.clearRect(0, 0, 800, canvas.height)
         let type
         if(radio1.checked) type = radio1.value
         else type = radio2.value
         arr.forEach((item, indeks) => {
+            //denne fikser hvordan de skal bevege seg i høyden, øker helt fram til den er ved sin riktige høyde
             if(item.size < item[type]/big){
             item.size += (item[type]/big)/30
             }
