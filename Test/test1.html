@@ -1,0 +1,17 @@
+<script>
+let ob = {
+    x: 100,
+    y: 200,
+    z: "hei",
+    draw: function(){
+        console.log("du kjørte funksjonen")
+    }
+}
+
+for(bale in ob){
+    if(typeof ob[bale] != "function"){
+        console.log(ob[bale])
+    }   
+}
+</script>
+
