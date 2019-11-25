@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><body>
+    <canvas></canvas>
+    <script>
+    const canvas = document.querySelector("canvas")
+    const c = canvas.getContext("2d")
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+
+    const G = 6.67408*Math.pow(10, -11)
+    let dirx, diry
+
+    const dist = (a, b) => Math.sqrt(Math.pow(b.pos.x-a.pos.x, 2) + Math.pow(b.pos.y-a.pos.y, 2))*149600000000/400
+    const force = (a, b) => (a.m*b.m*G)/(Math.pow(dist(a, b), 2))
+    const angle = (a, b) => Math.atan2(a.pos.y-b.pos.y, a.pos.x-b.pos.x)
+    
+    
+    
+
+    class Planet{
+        constructor(x, y, r, dx, dy, c, m){
+            this.pos = {
+                x: x,
+                y: y
+                }
+            this.vel = {
+                x: dx,
+                y: dy
+            }
+            this.acc = {
+                x: 0,
+                y:0
+            }
+            this.m = m
+            this.r = r
+            this.c = c
+        }
+        draw(){
+            c.beginPath()
+            c.fillStyle = this.c
+            c.arc(this.pos.x, this.pos.y, this.r, 0, 2*Math.PI)
+            c.fill()
+            c.closePath()
+        }
+        update(){
+
+            if(this != sun){
+                // console.log(angle(sun, this))
+                // if(this.pos.x-sun.pos.x > 0){ dirx = 1 }
+                // else{ dirx = 1 }
+                // if(this.pos.y-sun.pos.y > 0){ diry = 1 }
+                // else{ diry = 1 }
+
+                this.a = force(sun, this)/this.m
+                this.acc = {
+                x: Math.cos(angle(sun, this))*this.a,
+                y: Math.sin(angle(sun, this))*this.a
+            }
+            // console.log(Math.sin(angle(sun, this)))
+            }
+            
+            this.pos.x+=this.vel.x
+            this.pos.y+=this.vel.y
+            this.vel.x+=this.acc.x
+            this.vel.y+=this.acc.y
+            this.draw()
+        }
+    }
+
+  
+
+    let sun = new Planet(canvas.width/2, canvas.height/2, 60, 0, 0, "orange", 1.989*Math.pow(10, 30))
+    let earth = new Planet(1.01669941845*400 + canvas.width/2, canvas.height/2, 20, 0, 1.2, "green", 5.972*Math.pow(10, 24))
+
+    function loop(){
+        console.log(dist(sun, earth))
+        requestAnimationFrame(loop)
+        c.fillStyle = "lightblue"
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        sun.update()
+        earth.update()
+    }
+    loop()
+
+
+</script>
+</body>
+</html>

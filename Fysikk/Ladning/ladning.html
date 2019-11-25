@@ -9,9 +9,10 @@
     const canvas = document.querySelector("canvas")
     const c = canvas.getContext("2d")
     const e = 1.6*Math.pow(10, -19)
-    const k = 100
+    const mouseStrength = 100
     canvas.width = window.innerWidth-20
     canvas.height = window.innerHeight-20
+    let mouseIsPressed = false
     class Particle{
         constructor(pos, f){
             this.pos = pos
@@ -39,7 +40,7 @@
     }
     let arr = []
     function createParticles(){
-        for(let i=0; i<10; i++){
+        for(let i=0; i<50; i++){
             const pos = {
                 x: Math.random()*canvas.width,
                 y: Math.random()*canvas.height
@@ -50,31 +51,74 @@
     createParticles()
     function loop(){
         requestAnimationFrame(loop)
-        c.clearRect(0, 0, canvas.width, canvas.height)
+        c.fillStyle = "#365577"
+        c.fillRect(0, 0, canvas.width, canvas.height)
         arr.forEach(x =>{
             x.update()
         })
     }
     let dist = (pos1, pos2) => Math.sqrt(Math.pow(pos2.x-pos1.x, 2) + Math.pow(pos2.y-pos1.y, 2))
-    const m = 100000000
+    const m = 0.1
     
     function accSum(particle){
         let asumx = 0
         let asumy = 0
+        const rRight = canvas.width-particle.pos.x
+        const rLeft = particle.pos.x
+        const rTop = particle.pos.y
+        const rBot = canvas.height-particle.pos.y
+        asumx+= -(1/(rRight*rRight))/m
+        asumx+= (1/(rLeft*rLeft))/m
+        asumy+= (1/(rTop*rTop))/m
+        asumy+= -(1/(rBot*rBot))/m
+        if(mouseIsPressed){
+            const mouseDist = dist(particle.pos, mouse.pos)
+            const mangle = Math.atan2(mouse.pos.y-particle.pos.y, mouse.pos.x-particle.pos.x)
+            const mforce = 1/(mouseDist*mouseDist)
+            const mfx = Math.cos(mangle)*mforce
+            const mfy = Math.sin(mangle)*mforce
+            const max = -mfx/m*mouseStrength
+            const may = -mfy/m*mouseStrength
+            asumx+=max
+            asumy+=may
+        }
         arr.forEach(other => {
+            if(other != particle){
             const r = dist(particle.pos, other.pos)
+            if(r > 20){
             const angle = Math.atan2(other.pos.y-particle.pos.y, other.pos.x-particle.pos.x)
             const force = 1/(r*r)
             const fx = Math.cos(angle)*force
             const fy = Math.sin(angle)*force
-            const ax = fx/m
-            const ay = fy/m
+            const ax = -fx/m
+            const ay = -fy/m
             asumx+=ax
             asumy+=ay
-            console.log(asumx)
+            }
+            }
         })
         particle.acc = {x: asumx, y:asumy}
     }
+    let mouse = {
+        pos:{x: undefined,
+        y: undefined}        
+    }
+    function calcMouse(e){
+        if(e.type == "mousedown"){
+            mouseIsPressed = true
+            mouse.pos.x = e.clientX
+            mouse.pos.y = e.clientY
+        }
+        else if(e.type == "mouseup"){ mouseIsPressed = false}
+        else{ mouse.pos.x = e.clientX
+            mouse.pos.y = e.clientY
+        }
+    }
+
+    canvas.addEventListener("mousedown", calcMouse)
+    canvas.addEventListener("mouseup", calcMouse)
+    canvas.addEventListener("mousemove", calcMouse)
+
 
     loop()
 
