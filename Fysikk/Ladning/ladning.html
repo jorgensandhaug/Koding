@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+
+    const canvas = document.querySelector("canvas")
+    const c = canvas.getContext("2d")
+    const e = 1.6*Math.pow(10, -19)
+    const k = 100
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+    class Particle{
+        constructor(pos, f){
+            this.pos = pos
+            this.vel={x:0, y:0}
+            this.acc={x:0, y:0}
+            this.f = f
+        }
+        draw(){
+            c.beginPath()
+            c.fillStyle = this.f
+            c.arc(this.pos.x, this.pos.y, 10, 0, 2*Math.PI)
+            c.fill()
+            c.closePath()
+        }
+        update(){
+            accSum(this)
+            this.pos.x+=this.vel.x
+            this.pos.y+=this.vel.y
+            this.vel.x+=this.acc.x
+            this.vel.y+=this.acc.y
+            if(this.pos.x < 10 || this.pos.x > canvas.width-10) this.vel.x = -this.vel.x
+            if(this.pos.y < 10 || this.pos.y > canvas.height-10) this.vel.y = -this.vel.y
+            this.draw()
+        }
+    }
+    let arr = []
+    function createParticles(){
+        for(let i=0; i<10; i++){
+            const pos = {
+                x: Math.random()*canvas.width,
+                y: Math.random()*canvas.height
+            }
+            arr.push(new Particle(pos, "red"))
+        }
+    }
+    createParticles()
+    function loop(){
+        requestAnimationFrame(loop)
+        c.clearRect(0, 0, canvas.width, canvas.height)
+        arr.forEach(x =>{
+            x.update()
+        })
+    }
+    let dist = (pos1, pos2) => Math.sqrt(Math.pow(pos2.x-pos1.x, 2) + Math.pow(pos2.y-pos1.y, 2))
+    const m = 100000000
+    
+    function accSum(particle){
+        let asumx = 0
+        let asumy = 0
+        arr.forEach(other => {
+            const r = dist(particle.pos, other.pos)
+            const angle = Math.atan2(other.pos.y-particle.pos.y, other.pos.x-particle.pos.x)
+            const force = 1/(r*r)
+            const fx = Math.cos(angle)*force
+            const fy = Math.sin(angle)*force
+            const ax = fx/m
+            const ay = fy/m
+            asumx+=ax
+            asumy+=ay
+            console.log(asumx)
+        })
+        particle.acc = {x: asumx, y:asumy}
+    }
+
+    loop()
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
