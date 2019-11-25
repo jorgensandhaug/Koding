@@ -20,7 +20,12 @@
     <body>
         <div>  <input type="radio" id="radio1" value="prom" name="radio" checked> Promillekjøring
                 <input type="radio" id="radio2" value="hast" name="radio"> Ulovlig hastighet
+                
+                    <input type="button" value="Stigende">
+                    <input type="button" value="Synkende">
+                
         </div>
+       
         <div>
             
     <select>
@@ -44,6 +49,7 @@
     const radio1 = document.getElementById("radio1")
     const radio2 = document.getElementById("radio2")
     const sel = document.querySelector("select")
+    const buttons = document.querySelectorAll("input[type='button']")
     //lagrer informasjonen i en array med objekter
     const arr = [
         {yr:2002, prom:9631, hast:9863, size:0},
@@ -66,13 +72,21 @@
         big = biggest/450
     }
     newBig()
-    
 
+    function stigende(){
+        arr.sort((a, b) => a[type]-b[type])
+    }
+    function synkende(){
+        console.log(arr)
+        arr.sort((a, b) => b[type]-a[type])
+        console.log(arr)
+    }
+    
+let type
     //funksjon for å tegne oppgave a og b
     //venstresiden av canvas
     function drawLeft(){
         c.clearRect(0, 0, 800, canvas.height)
-        let type
         if(radio1.checked) type = radio1.value
         else type = radio2.value
         arr.forEach((item, indeks) => {
@@ -129,6 +143,7 @@
     radio1.onchange = reset1
     radio2.onchange = reset1
     sel.onchange = reset2
+
     
     //loop-funksjon som kjører konstant
     function loop(){
@@ -139,6 +154,9 @@
     }
     //setter i gang loopen
     loop()
+    buttons[0].onclick = stigende
+    buttons[1].onclick = synkende
+
     
     
     
