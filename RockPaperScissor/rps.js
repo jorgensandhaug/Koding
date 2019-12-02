@@ -13,7 +13,6 @@ let shadow=""
 
 rock_div.addEventListener('click', function(){
     var botResult=Math.floor(Math.random()*3)+1
-
 if(botResult===1){
     us++;
     userScore_span.innerHTML=us;
@@ -24,9 +23,6 @@ if(botResult===1){
     r.style.boxShadow= "0 0 10px"+shadow
     setTimeout(function(){r.style.borderColor= "white"},1000)
     setTimeout(function(){r.style.boxShadow= "none"},1000)
-
-
-
 }
 else if(botResult===2){
     bs++;
