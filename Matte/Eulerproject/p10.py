@@ -9,4 +9,3 @@ for i in range(3, 2000000):
     if(isPrime(i)):
         sum+=i
 print(sum)
-print(isPrime(1))

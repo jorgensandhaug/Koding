@@ -63,14 +63,14 @@
     function accSum(particle){
         let asumx = 0
         let asumy = 0
-        const rRight = canvas.width-particle.pos.x
-        const rLeft = particle.pos.x
-        const rTop = particle.pos.y
-        const rBot = canvas.height-particle.pos.y
-        asumx+= -(1/(rRight*rRight))/m
-        asumx+= (1/(rLeft*rLeft))/m
-        asumy+= (1/(rTop*rTop))/m
-        asumy+= -(1/(rBot*rBot))/m
+        // const rRight = canvas.width-particle.pos.x
+        // const rLeft = particle.pos.x
+        // const rTop = particle.pos.y
+        // const rBot = canvas.height-particle.pos.y
+        // asumx+= -(1/(rRight*rRight))/m
+        // asumx+= (1/(rLeft*rLeft))/m
+        // asumy+= (1/(rTop*rTop))/m
+        // asumy+= -(1/(rBot*rBot))/m
         if(mouseIsPressed){
             const mouseDist = dist(particle.pos, mouse.pos)
             const mangle = Math.atan2(mouse.pos.y-particle.pos.y, mouse.pos.x-particle.pos.x)
