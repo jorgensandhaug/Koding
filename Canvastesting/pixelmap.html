@@ -1,0 +1,18 @@
+<canvas></canvas>
+<script>
+const canvas = document.querySelector("canvas")
+const c = canvas.getContext("2d")
+canvas.width = 800
+canvas.height = 800
+c.fillStyle="black"
+mapArr = Array(canvas.height).fill(Array(canvas.width).fill(1))
+console.log(mapArr)
+for(let y = 0; y < canvas.height; y++){
+    for(let x = 0; x<canvas.width; x++){
+        if(mapArr[y][x] == 1){
+            c.fillRect(x, y, 1, 1)
+        } 
+    }
+}
+
+</script>

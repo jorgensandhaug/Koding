@@ -24,5 +24,5 @@ for x in range(1, 28123):
     print(tot)
 
 print(tot)
-
+4179871
 

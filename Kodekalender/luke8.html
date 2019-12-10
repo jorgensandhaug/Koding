@@ -1,0 +1,188 @@
+<script>
+const PLUSS101 = t => t+101
+const PLUSS4 = t => t+4
+const MINUS9 = t => t-9
+const MINUS1 = t => t-1
+
+let minus
+function REVERSERSIFFER(tall){
+    tall = String(tall).split("")
+    if(tall[0] == "-"){
+        tall.splice(0, 1)
+        minus = true
+    }
+    else{
+        minus = false
+    }
+    tall.reverse()
+    if(minus){
+        tall.unshift("-")
+    }
+    tall = Number(tall.join(""))
+    return tall
+}
+
+function OPP7(tall){
+    if(tall >= -6 && tall <=-1){
+        tall = 7
+    }
+    else if(tall>=0){
+        while((tall-7) % 10 !=0){
+            tall+=1
+        }
+    }
+    else{
+        while((tall+7) %10 !=0){
+            tall+=1
+        }
+    }
+    return tall
+}
+function GANGEMSD(tall){
+    if(tall >= 0){
+        tall*= Number(String(tall)[0])
+    }
+    else{
+        tall*= Number(String(tall)[1])
+    }
+    return tall
+}
+function DELEMSD(tall){
+    if(tall >= 0){
+        tall/= Number(String(tall)[0])
+        tall = Math.floor(tall)
+    }
+    else{
+        tall/= Number(String(tall)[1])
+        tall = -Math.ceil(-tall)
+    }
+    return tall
+}
+function PLUSS1TILPAR(tall){
+    let par1 = String(tall)
+    let temp = 0
+    let tempStr = ""
+    for(let i = 0; i< par1.length; i++){
+        temp = Number(par1[i])
+        if(Number(par1[i])%2 == 0){
+            temp+=1
+        }
+        if(par1[i] == "-"){
+            tempStr += "-"
+        }
+        else{
+        tempStr+=String(temp)
+        }
+    }
+    tall = Number(tempStr)
+    return tall
+}
+function TREKK1FRAODDE(tall){
+    let par1 = String(tall)
+    let temp = 0
+    let tempStr = ""
+    for(let i = 0; i< par1.length; i++){
+        temp = Number(par1[i])
+        if(Number(par1[i])%2 != 0){
+            temp-=1
+        }
+        if(par1[i] == "-"){
+            tempStr += "-"
+        }
+        else{
+        tempStr+=String(temp)
+        }
+    }
+    tall = Number(tempStr)
+    return tall
+}
+function roter(arr){
+    arr.push(arr[0])
+    arr.shift()
+    return arr
+}
+function ROTERPAR(){
+    hjul.forEach((item, index) => {
+        if(index%2 == 0){
+            item = roter(item)
+        }
+    })
+}
+function ROTERODDE(){
+    hjul.forEach((item, index) => {
+        if(index%2 != 0){
+            item = roter(item)
+        }
+    })
+}
+function ROTERALLE(){
+    hjul.forEach((item, index) => {
+        item = roter(item)
+    })
+}
+function STOPP(){
+    stop = true
+}
+
+
+let hjul = [
+    [PLUSS101, OPP7, MINUS9, PLUSS101], 
+    [TREKK1FRAODDE, MINUS1, MINUS9, PLUSS1TILPAR], 
+    [PLUSS1TILPAR, PLUSS4, PLUSS101, MINUS9],
+    [MINUS9, PLUSS101, TREKK1FRAODDE, MINUS1],
+    [ROTERODDE, MINUS1, PLUSS4, ROTERALLE],
+    [GANGEMSD, PLUSS4, MINUS9, STOPP],
+    [MINUS1, PLUSS4, MINUS9, PLUSS101],
+    [PLUSS1TILPAR, MINUS9, TREKK1FRAODDE, DELEMSD],
+    [PLUSS101, REVERSERSIFFER, MINUS1, ROTERPAR],
+    [PLUSS4, GANGEMSD, REVERSERSIFFER, MINUS9]
+]
+let tallet = 24
+let stop = false
+
+const lastDigit = tall => Number(String(tall)[String(tall).length-1])
+let x = 0
+let prevTall = tallet
+let funksjonen
+
+while (!stop){
+    prevTall = tallet
+    funksjonen = hjul[lastDigit(tallet)][0]
+    if(funksjonen != ROTERODDE && funksjonen!=ROTERALLE && funksjonen!=ROTERPAR && funksjonen!=STOPP){
+        tallet = funksjonen(tallet)
+    }
+    else{
+        funksjonen()
+    }
+    roter(hjul[lastDigit(prevTall)])
+}
+console.log(tallet)
+
+
+
+// let prevTall = tallet
+// let funksjonen
+// let biggest = 0
+// for(let i = 1; i<=10; i++){
+//     stop = false
+//     tallet = i
+//     while (!stop){
+//         prevTall = tallet
+//         funksjonen = hjul[lastDigit(tallet)][0]
+//         if(funksjonen != ROTERODDE && funksjonen!=ROTERALLE && funksjonen!=ROTERPAR){
+//             tallet = funksjonen(tallet)
+//         }
+//         else{
+//             funksjonen()
+//         }
+//         roter(hjul[lastDigit(prevTall)])
+//     }
+//     if(tallet > biggest){
+//         biggest = tallet
+//     }
+// }
+// console.log(biggest)
+
+
+
+</script>

@@ -50,6 +50,13 @@
     const radio2 = document.getElementById("radio2")
     const sel = document.querySelector("select")
     const buttons = document.querySelectorAll("input[type='button']")
+    const gradient1 = c.createLinearGradient(50, 50, 800, 800)
+    gradient1.addColorStop(0.3, "magenta")
+    gradient1.addColorStop(0.4, "blue")
+    gradient1.addColorStop(0.7, "red")
+    const gradient2 = c.createLinearGradient(800, 800, canvas.width, canvas.height)
+    gradient2.addColorStop(0.2, "black")
+    gradient2.addColorStop(1, "white")
     //lagrer informasjonen i en array med objekter
     const arr = [
         {yr:2002, prom:9631, hast:9863, size:0},
@@ -60,6 +67,7 @@
         {yr:2007, prom:8534, hast:18010, size:0}
     ]
 
+    let arr1 = JSON.parse(JSON.stringify(arr))
     //finner den største verdien, og definerer størrelsen på de andre utifra det
     let big
     function newBig(){
@@ -73,12 +81,12 @@
     newBig()
 
     function stigende(){
-        arr.sort((a, b) => a[type]-b[type])
+        arr1.sort((a, b) => a[type]-b[type])
+        reset1()
     }
     function synkende(){
-        console.log(arr)
-        arr.sort((a, b) => b[type]-a[type])
-        console.log(arr)
+        arr1.sort((a, b) => b[type]-a[type])
+        reset1()
     }
     
 let type
@@ -88,7 +96,7 @@ let type
         c.clearRect(0, 0, 800, canvas.height)
         if(radio1.checked) type = radio1.value
         else type = radio2.value
-        arr.forEach((item, indeks) => {
+        arr1.forEach((item, indeks) => {
             //denne fikser hvordan de skal bevege seg i høyden, øker helt fram til den er ved sin riktige høyde
             //hver gang denne funksjonen kjøres øker høyden til søylene, så lenge de er mindre enn den opprinnelige høyden
             if(item.size < item[type]/big){
@@ -96,11 +104,12 @@ let type
             }
             //tegner søylene og text til canvas med riktige høyder
             c.beginPath()
-            c.fillStyle = "blue"
+            c.fillStyle = gradient1
             c.fillRect(100+indeks*100, canvas.height-item.size, 50, item.size)
             c.font = "20px sans-serif"
             c.fillText(item[type], 100+indeks*100, canvas.height-item.size-30)
             c.font = "16px arial"
+            c.fillStyle = "black"
             c.fillText("år: " + item.yr, 100+indeks*100, canvas.height-item.size-90)
             c.closePath()
         })
@@ -118,10 +127,11 @@ let type
             size2+=big/4
         }
         c.beginPath()
-        c.fillStyle = "red"
+        c.fillStyle = gradient2
         c.fillRect(900, canvas.height-size1, 50, size1)
         c.fillRect(1000, canvas.height-size2, 50, size2)
         c.font = "20px sans-serif"
+        c.fillStyle = "black"
         c.fillText(`Promille: ${arr[sel.selectedIndex].prom}`, 850, canvas.height-size1-50)
         c.fillText(`Hastighet: ${arr[sel.selectedIndex].hast}`, 1000, canvas.height-size2-50)
     }
@@ -131,7 +141,7 @@ let type
     
 
     function reset1(){
-        arr.forEach(item => {
+        arr1.forEach(item => {
             item.size = 0
         })
     }
@@ -156,9 +166,6 @@ let type
     buttons[0].onclick = stigende
     buttons[1].onclick = synkende
 
-    
-    
-    
     </script>
     </body>
 </html>

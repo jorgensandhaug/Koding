@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.5/math.js"></script>
+    <script>
+        const canvas = document.querySelector("canvas")
+        const c = canvas.getContext("2d")
+        canvas.width = 40000
+        canvas.height = 40000
+
+        for(let x = 0; x<=canvas.width; x++){
+            for(let y = 0; y<=canvas.height; y++){
+                let a = (x-canvas.width/2)/(canvas.width/4)
+                let b = (y-canvas.height/2)/(canvas.height/4)
+                
+                let ca = a
+                let cb = b
+                let n = 0
+                let z = 0
+                while(n<1000){
+                    let aa = a*a-b*b
+                    let bb = 2*a*b
+                    a = aa+ca
+                    b = bb+cb
+                    if(Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) > 2) break
+                    n++
+                }
+                c.fillStyle = `hsl(50, 100%, ${n/10}%)`
+                c.fillRect(x, y, 1, 1)
+            }
+        }
+    
+    </script>
+    
+</body>
+</html>
