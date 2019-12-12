@@ -1,0 +1,30 @@
+<script>
+let tall, tall1, tall2
+function iter(num){
+    tall = num
+    for(let i = 1; i<=7; i++){
+        tall1 = tall.split("")
+        tall2 = tall.split("")
+        tall1 = tall1.sort((a, b) => Number(a)-Number(b)).join("")
+        tall2 = tall2.sort((a, b) => Number(b)-Number(a)).join("")
+        if(Number(tall1) > Number(tall2)){
+            tall = numberToString(Number(tall1)-Number(tall2))
+        }  
+        else{
+            tall = numberToString(Number(tall2)-Number(tall1))
+        } 
+        if(tall == 6174) return i
+    }
+}
+function numberToString(num){
+    let temp = num.toString().split("")
+    for(let i = temp.length; i<4; i++) temp.unshift("0")
+    return temp.join("")
+}
+let sum = 0
+for(let i = 1000; i<=9999; i++){
+    if(iter(i.toString()) == 7) sum++
+}
+console.log(sum)
+
+</script>
