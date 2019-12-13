@@ -5,7 +5,7 @@ deathStreak = 0
 
 for i in range(0, len(arr)):
     if(arr[i]>=size):
-        arr[i+1]+=(arr[i]-size)
+        arr[i+1]+=(arr[i]-size)   
         deathStreak = 0
         size+=1
     else:

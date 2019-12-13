@@ -9,16 +9,16 @@
     <script>
         const canvas = document.querySelector("canvas")
         const c = canvas.getContext("2d")
-        canvas.width = 10000
-        canvas.height = 10000
+        canvas.width = 20000
+        canvas.height = 20000
 
         for(let x = 0; x<=canvas.width; x++){
             for(let y = 0; y<=canvas.height; y++){
-                let a = (x-canvas.width/2)/(canvas.width/4)
-                let b = (y-canvas.height/2)/(canvas.height/4) 
+                let a = (x-canvas.width/2)/(canvas.width*1000)-0.16357
+                let b = (y-canvas.height/2)/(canvas.height*1000)+1.03082
                 
-                let ca = -0.835
-                let cb = -0.2321
+                let ca = a
+                let cb = b
                 let n = 0
                 while(n<500){
                     let aa = a*a-b*b
@@ -28,8 +28,8 @@
                     if(Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) > 2) break
                     n++
                 }
-                c.fillStyle = `hsl(230, 100%, ${100-n}%)`
-                c.fillRect(x, y-2000, 1, 1)
+                c.fillStyle = `hsl(0, 100%, ${n/2}%)`
+                c.fillRect(x, y, 1, 1)
             }
         }
     
