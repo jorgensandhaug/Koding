@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+    body{
+        display: grid;
+        place-items: center;
+        height: 90vh;
+    }
+    .wrapper{
+        text-align: center;
+    }
+    h1{
+        font-family: monospace;
+        font-weight: 500;
+    }
+    h2{
+        font-family: monospace;
+        font-weight: 100;
+    }
+    audio{
+        display: none;
+    }
+    input[type="button"] {
+        display: inline-block;
+        padding: 15px 25px;
+        margin: 20px;
+        font-size: 18px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 9px #999;
+    }
+
+    input[type="button"]:hover {background-color: #3e8e41}
+
+    input[type="button"]:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+    }
+    #soyle{
+        background: chocolate;
+        width: 200px;
+        height: 0px;
+        transition: height 2s ease-out;
+        color: white;
+        font-family: monospace;
+        font-size: 20px;
+    }
+    #soyleMaks{
+        background: darkgreen;
+        width:200px;
+        height:0px;
+        color: white;
+        font-family: monospace;
+        font-size: 20px;
+        transition: height 2s ease-out;
+    }
+    .wrap{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+
+    </style>
+</head>
+<body>
+    <div class = "wrapper">
+        <h1>Velkommen til quiz!</h1>
+        Skriv inn navnet ditt og trykk enter for å starte quiz: <input id="navn" type="text">
+        <br>
+        <input type="button" value="Start Quiz" id="start">
+    </div>
+
+    <script>
+    let navnEl = document.getElementById("navn");
+    let divEl = document.querySelector(".wrapper");
+    let startBtn = document.getElementById("start").onclick = startGame
+    let navn;
+    let currentLevel = 0;
+    let score = 0;
+    let riktigeSvar = ["Elefant", "Gris", "Løve", "Løve", "Elefant"];
+    let sources = [
+    "<audio src='elefant.mp3' type='audio/mpeg' autoplay></audio>",
+    "<audio src='gris.mp3' type='audio/mpeg' autoplay></audio>",
+    "<audio src='løve.mp3' type='audio/mpeg' autoplay></audio>",
+    "<video src='Video2_1.mp4' autoplay></video>",
+    "<video src='Video3_1.mp4' autoplay></video>"
+    ]
+    let options = [
+        ["Nesehorn", "Elefant", "Sjiraff", "Apekatt"],
+        ["Ku", "Okse", "Gris", "Villsvin"],
+        ["Chihuahua", "Tiger", "Gorilla", "Løve"],
+        ["Tiger", "Røyskatt", "Oter", "Løve"],
+        ["Elefant", "Balunga", "Kenguru", "Sjøløve"]
+    ]
+    navnEl.onchange = function(){
+        navn = navnEl.value
+        startGame()
+    }
+    function startGame(){
+        if(currentLevel == riktigeSvar.length){
+            divEl.innerHTML = `<h1>Du er nå ferdig med quizen, din score ble ${score} poeng!</h1>`
+            if(score == 10) {divEl.innerHTML+= `<h2>Wow, alt riktig. Bra jobbet ${navn}</h2>`}
+            else if(score > 7)  {divEl.innerHTML+= `<h2>Det her var helt innafor ${navn}</h2>`}
+            else {divEl.innerHTML+= `<h2>Du suger ${navn}! Gå hjem og øv mer!</h2>`}
+            divEl.innerHTML += `<div class="wrap"><div id="soyle">Dine poeng (${score} poeng)</div> <div id="soyleMaks">Maks score (10 poeng)</div></div>`
+            setTimeout(function(){document.getElementById("soyle").style.height = `${50*score}px`
+            document.getElementById("soyleMaks").style.height = `500px`}, 500)
+            
+        }
+        else{
+        divEl.innerHTML = `<h1>Gjett hvilket dyr</h1>
+        ${sources[currentLevel]} <br>
+        <input type="button" id="spillNytt" value="Spill av på nytt">
+        <br>`
+
+        options[currentLevel].forEach(item =>{
+            divEl.innerHTML += `<input type="button" class="btn" value=${item}>`
+        })
+        
+        let audiovideoEl = document.querySelector((currentLevel < 3)?"audio":"video");
+        let spillNytt = document.getElementById("spillNytt")
+        let btns = document.querySelectorAll(".btn");
+        for(let i = 0; i<btns.length; i++){
+            btns[i].addEventListener("click", checkButton)
+        }
+        spillNytt.addEventListener("click", function(){
+            audiovideoEl.load()
+        })
+        }
+    }
+    function checkButton(e){
+        if(e.target.value == riktigeSvar[currentLevel]){
+            score+=2
+            winMsg()
+        }
+        else{
+            score-=1
+            looseMsg()
+        }
+        currentLevel+=1
+        setTimeout(startGame, 2000)
+    }
+    function winMsg(){
+        divEl.innerHTML = `<h1>Gratulerer ${navn}, du fikk riktig! +2 poeng.
+         Din score er nå ${score} poeng</h1>`
+    }
+    function looseMsg(){
+        divEl.innerHTML = `<h1>Du svarte feil:( -1 poeng.
+         Din score er nå ${score} poeng</h1>`
+    }
+    </script>
+   
+    
+    
+</body>
+</html>
