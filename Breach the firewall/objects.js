@@ -2,7 +2,7 @@
 let player = {
     pos: {x: canvas.width/2, y: canvas.height/2},
     vel: {x:0, y:0},
-    r: 15,
+    r: 14,
     health: 400,
     money: 0,
     carry: undefined,
@@ -11,9 +11,10 @@ let player = {
     
     draw: function(){
         c.beginPath()
-        c.fillStyle = this.color
-        c.arc(this.pos.x, this.pos.y, this.r, 0, 2*Math.PI)
-        c.fill()
+        // c.fillStyle = this.color
+        // c.arc(this.pos.x, this.pos.y, this.r, 0, 2*Math.PI)
+        // c.fill()
+        c.drawImage(tankImg, 0, 0, 64, 64, this.pos.x-24, this.pos.y-24, 48, 48)
         c.closePath()
         c.beginPath()
         c.moveTo(this.pos.x, this.pos.y)

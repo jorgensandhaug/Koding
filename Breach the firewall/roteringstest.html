@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas></canvas>
+
+    <script>
+        const canvas = document.querySelector("canvas")
+        const c = canvas.getContext("2d")
+        canvas.width = 400
+        canvas.height = 400
+        c.fillStyle="red"
+        let plassering = [200, 100]
+        
+        const rotate = (vector, angle) => [vector[0]*Math.cos(angle) - vector[1]*Math.sin(angle), vector[0]*Math.sin(angle) + vector[1]*Math.cos(angle)]
+        
+        plassering = rotate(plassering, -Math.PI/6)
+        c.fillRect(100, 100, 100, 100)
+        c.save()
+        c.rotate(Math.PI/6)
+        c.fillRect(plassering[0], plassering[1], 100, 100)
+        c.restore()
+        
+        
+        </script>
+    
+</body>
+</html>
