@@ -11,13 +11,16 @@ let healthPotImg = new Image()
 healthPotImg.src = "sprites/healthPot.png"
 
 
+let shopBtns = document.querySelectorAll(".shopBtn")
+
+
 
 let type, speed, tid, bulletSpeed, gunLength, playerIsCarrying, hunterSpeed, moneyPerKill, pierces, tankLevel, mode, speedReduction, readyToShoot, baseDmg, bloom, fireRate, healthPotHeal
 function defaultSettings(){
     healthPotHeal = 300
     readyToShoot = true
     speedReduction = [false, 1.5]
-    weapons.smg()
+    weapons.pistol()
     fireRate = 3
     speed = 3
     tid = 0
@@ -133,6 +136,7 @@ let weapons = {
         mode = "pistol"
         bulletSpeed = 5
         baseDmg = 50
+        pierces = 0
     },
     smg: function(){
         mode = "smg"
@@ -157,7 +161,7 @@ let weapons = {
     }
 }
 
-defaultSettings()
+
 
 const distance = (ob1, ob2) => Math.sqrt(Math.pow(ob2.pos.x-ob1.pos.x, 2) + Math.pow(ob2.pos.y-ob1.pos.y, 2))
 
@@ -198,6 +202,7 @@ function moveMouse(e){
 }
 function restart(){
     defaultSettings()
+    changeTank()
     stop = false
     overlay.style.display = "none"
     player.health = 400
@@ -206,8 +211,11 @@ function restart(){
     player.money = 0
     bulletArr = []
     hunterArr = []
-    pickup1 = new Pickup(100, 100, "pink1", "pink")
-    pickup2 = new Pickup(200, 100, "yellow1", "yellow")
+    for(let i = 0; i < 5; i++){
+        shopBtns[i].value = shopBtns[i].id
+    }
+    // pickup1 = new Pickup(100, 100, "pink1", "pink")
+    // pickup2 = new Pickup(200, 100, "yellow1", "yellow")
 }
 
 function youLose(){
@@ -253,6 +261,8 @@ function spray(){
 }
 
 
+
+
 let shopFunctions = [
     function(pris){
         if(tankLevel < 7){
@@ -263,6 +273,7 @@ let shopFunctions = [
         }
         else{
             shopBtns[0].value = `MAXED OUT`
+            player.money += pris
         }
     },
     function(pris){
@@ -285,15 +296,25 @@ let shopFunctions = [
     }
 ]
 
-let shopBtns = document.querySelectorAll(".shopBtn")
+
 
 for(let i = 0; i<shopBtns.length; i++){
     shopBtns[i].addEventListener("click", function(){
+
         let price = Number(shopBtns[i].value.split("").slice(1).join(""))
+
         if(player.money >= price){
             player.money -= price
-            shopFunctions[i](price)
-        } 
+            if(i<5) shopFunctions[i](price)
+
+            else{
+                weapons[shopBtns[i].name]()
+                for(let k = 5; k < shopBtns.length; k++){
+                    shopBtns[k].value = shopBtns[k].id
+                }
+                shopBtns[i].value = "SELECTED"
+            }
+        }
     })
 }
 

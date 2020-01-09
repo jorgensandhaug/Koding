@@ -4,7 +4,7 @@ let player = {
     vel: {x:0, y:0},
     r: 14,
     health: 400,
-    money: 1000,
+    money: 10000,
     carry: undefined,
     baseDmg: baseDmg,
     addedDmg: 0,
@@ -34,6 +34,7 @@ let player = {
 
     },
     update: function(){
+        player.baseDmg = baseDmg
         this.pos.x+=this.vel.x
         this.pos.y+=this.vel.y
         this.vel.x*=0.9
