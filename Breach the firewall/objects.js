@@ -4,9 +4,10 @@ let player = {
     vel: {x:0, y:0},
     r: 14,
     health: 400,
-    money: 0,
+    money: 1000,
     carry: undefined,
-    damage: 100,
+    baseDmg: baseDmg,
+    addedDmg: 0,
     color: "blue",
     
     draw: function(){
@@ -37,10 +38,10 @@ let player = {
         this.pos.y+=this.vel.y
         this.vel.x*=0.9
         this.vel.y*=0.9
-        if(controller.w) this.vel.y = -speed
-        if(controller.s) this.vel.y = speed
-        if(controller.d) this.vel.x = speed
-        if(controller.a) this.vel.x = -speed
+        if(controller.w) {if(speedReduction[0]){this.vel.y = -(speed-speedReduction[1])} else{this.vel.y = -speed}}
+        if(controller.s) {if(speedReduction[0]){this.vel.y = speed-speedReduction[1]} else{this.vel.y = speed}}
+        if(controller.d) {if(speedReduction[0]){this.vel.x = speed-speedReduction[1]} else{this.vel.x = speed}}
+        if(controller.a) {if(speedReduction[0]){this.vel.x = -(speed-speedReduction[1])} else{this.vel.x = -speed}}
         this.draw()
 
         if(this.health <= 0){
@@ -93,5 +94,20 @@ let moneyBar = {
         c.fillText(`$${player.money}`, canvas.width-125, 60)
     }
 }
+
+
+let healthPots = {
+    antall: 0,
+    draw: function(){
+        c.drawImage(healthPotImg, 0, 0, healthPotImg.width, healthPotImg.height, canvas.width-175, 30, 32, 32)
+        c.font = "20px monospace"
+        c.fillStyle = "black"
+        c.fillText(this.antall, canvas.width-175 + 32 - 10, 30+32)
+    }
+}
+
+
+
+defaultSettings()
 
 

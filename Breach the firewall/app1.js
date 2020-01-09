@@ -15,11 +15,11 @@ setInterval(function(){
     if(!stop){
         hunterArr.push(new Hunter())
     }
-}, 300)
+}, 1000)
 
 setInterval(function(){
-    tid+=1
-}, 1000)
+    tid+=0.01
+}, 10)
 
 
 function loop(){
@@ -27,6 +27,12 @@ function loop(){
     if(!stop){
         c.fillStyle = "beige"
         c.fillRect(0, 0, canvas.width, canvas.height)
+
+        if(mouseIsPressed && (mode == "lmg" || mode == "smg")){
+            spray()
+        }
+
+
         for(let i = 0; i<bulletArr.length; i++){
 
             if(bulletArr[i].pos.x < 0 || bulletArr[i].pos.x > canvas.width || bulletArr[i].pos.y < 0 || bulletArr[i].pos.y > canvas.height){
@@ -39,7 +45,7 @@ function loop(){
                 if(distance(hunterArr[k], bulletArr[i]) < bulletArr[i].r + hunterArr[k].r && bulletArr[i].connectedHunter != hunterArr[k]){
                     bulletArr[i].connectedHunter = hunterArr[k]
                     bulletArr[i].pierces += 1
-                    hunterArr[k].health -= player.damage
+                    hunterArr[k].health -= player.baseDmg + player.addedDmg
                     if(hunterArr[k].health <=0){
                         hunterArr.splice(k, 1)
                         k-=1
@@ -85,6 +91,9 @@ function loop(){
         pickup2.update()
         healthBar.draw()
         moneyBar.draw()
+        healthPots.draw()
+
+        c.fillText(`Current weapon: ${mode.toUpperCase()}`, 20, 25)
 
     }
 }

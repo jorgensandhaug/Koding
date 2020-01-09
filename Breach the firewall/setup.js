@@ -7,21 +7,27 @@ canvas.height = window.innerHeight-40
 
 let tankImg = new Image()
 tankImg.src = "sprites/smallTank1.png"
+let healthPotImg = new Image()
+healthPotImg.src = "sprites/healthPot.png"
 
 
-let type, speed, tid, bulletSpeed, gunLength, playerIsCarrying, hunterSpeed, moneyPerKill, pierces, tankLevel
+
+let type, speed, tid, bulletSpeed, gunLength, playerIsCarrying, hunterSpeed, moneyPerKill, pierces, tankLevel, mode, speedReduction, readyToShoot, baseDmg, bloom, fireRate, healthPotHeal
 function defaultSettings(){
+    healthPotHeal = 300
+    readyToShoot = true
+    speedReduction = [false, 1.5]
+    weapons.smg()
+    fireRate = 3
     speed = 3
     tid = 0
-    bulletSpeed = 5
     gunLength = 30
     playerIsCarrying = false
     hunterSpeed = 2
     moneyPerKill = 25
-    pierces = 0
-    tankLevel = 4
+    tankLevel = 1
 }
-defaultSettings()
+
 
 let pushAwayStrengt = 0.2
 let pushWhenHitStrength = 30
@@ -42,7 +48,7 @@ let tanks = {
             if(player.health > 375) player.health = 375 
             healthBar.startHealth = 375
             speed = 4
-            tankImg.src = "sprites/smallTank2.pngsprites/"
+            tankImg.src = "sprites/smallTank2.png"
         },
         function(){
             if(player.health > 350) player.health = 350 
@@ -59,45 +65,99 @@ let tanks = {
         function(){
             if(player.health > 300) player.health = 300 
             healthBar.startHealth = 300
-            speed = 7
+            speed = 6.5
             tankImg.src = "sprites/smallTank5.png"
+        },
+        function(){
+            if(player.health > 275) player.health = 275 
+            healthBar.startHealth = 275
+            speed = 7
+            tankImg.src = "sprites/smallTank6.png"
+        },
+        function(){
+            if(player.health > 250) player.health = 250
+            healthBar.startHealth = 250
+            speed = 8.5
+            tankImg.src = "sprites/smallTank7.png"
         },
     ],
     big: [
         function(){
-            if(player.health > 500) player.health = 500 
+            player.health = 500
             healthBar.startHealth = 500
             speed = 2.5
-            player.color = "green"
+            tankImg.src = "sprites/smallTank1.png"
         },
         function(){
             if(player.health > 600) player.health = 600 
             healthBar.startHealth = 600
             speed = 2.5
-            player.color = "brown"
+            tankImg.src = "sprites/smallTank2.png"
         },
         function(){
             if(player.health > 700) player.health = 700 
             healthBar.startHealth = 700
             speed = 2.5
-            player.color = "grey"
+            tankImg.src = "sprites/smallTank3.png"
         },
         function(){
             if(player.health > 800) player.health = 800 
             healthBar.startHealth = 800
             speed = 2.5
-            player.color = "#722f37"
+            tankImg.src = "sprites/smallTank4.png"
         },
         function(){
             if(player.health > 900) player.health = 900 
             healthBar.startHealth = 900
             speed = 2.5
-            player.color = "black"
+            tankImg.src = "sprites/smallTank5.png"
         },
-
-
+        function(){
+            if(player.health > 1000) player.health = 1000 
+            healthBar.startHealth = 1000
+            speed = 2.5
+            tankImg.src = "sprites/smallTank6.png"
+        },
+        function(){
+            if(player.health > 1500) player.health = 1500 
+            healthBar.startHealth = 1500
+            speed = 2
+            tankImg.src = "sprites/smallTank7.png"
+        }
     ]
 }
+
+
+let weapons = {
+    pistol: function(){
+        mode = "pistol"
+        bulletSpeed = 5
+        baseDmg = 50
+    },
+    smg: function(){
+        mode = "smg"
+        bulletSpeed = 3.5
+        baseDmg = 25
+        bloom = Math.PI/15
+        fireRate = 4
+    },
+    lmg: function(){
+        mode = "lmg"
+        bulletSpeed = 5
+        speedReduction = [true, 1.5]
+        baseDmg = 65
+        fireRate = 3
+        bloom = Math.PI/12
+    },
+    sniper: function(){
+        mode = "sniper"
+        bulletSpeed = 10
+        pierces = 2
+        baseDmg = 100
+    }
+}
+
+defaultSettings()
 
 const distance = (ob1, ob2) => Math.sqrt(Math.pow(ob2.pos.x-ob1.pos.x, 2) + Math.pow(ob2.pos.y-ob1.pos.y, 2))
 
@@ -126,9 +186,8 @@ const rotate = (vector, angle) =>[vector[0]*Math.cos(angle) - vector[1]*Math.sin
 
 
 function pressDown(e){
-    if (e.type == "keydown"){
-        controller[e.key] = true
-    }
+    if(e.key == "h" || e.key == "H") {healthPots.antall -= 1; player.health += healthPotHeal; if(player.health > healthBar.startHealth) player.health = healthBar.startHealth}
+    else controller[e.key] = true
 }
 function releaseKey(e){
     controller[e.key] = false
@@ -162,22 +221,49 @@ function youLose(){
     restartBtn.addEventListener("click", restart)
 }
 
+let oldTime = 0
 
+function randomInt(min, max){
+    return Math.random()*(max-min)+min
+}
 
 function shoot(){
+    mouseIsPressed = true
     let deltaX = mouse.x-player.pos.x
     let deltaY = mouse.y-player.pos.y
     let phi = Math.atan2(deltaY, deltaX)
-    bulletArr.push(new Bullet(player.pos.x + Math.cos(phi)*gunLength, player.pos.y + Math.sin(phi)*gunLength, Math.cos(phi)*bulletSpeed + player.vel.x*0.5, Math.sin(phi)*bulletSpeed + player.vel.y*0.5))
+    if(mode == "sniper"){
+        if(tid - oldTime >= 1) {readyToShoot = true; oldTime = tid}
+        else readyToShoot = false
+    }
+    else if(mode == "pistol") readyToShoot = true
+    if(readyToShoot) bulletArr.push(new Bullet(player.pos.x + Math.cos(phi)*gunLength, player.pos.y + Math.sin(phi)*gunLength, Math.cos(phi)*bulletSpeed + player.vel.x*0.5, Math.sin(phi)*bulletSpeed + player.vel.y*0.5))
+    readyToShoot = false
+}
+
+function spray(){
+    let deltaX = mouse.x-player.pos.x
+    let deltaY = mouse.y-player.pos.y
+    let phi = Math.atan2(deltaY, deltaX)
+    phi = randomInt(phi-bloom, phi+bloom)
+    if((tid-oldTime)*fireRate >= 1/fireRate){
+        bulletArr.push(new Bullet(player.pos.x + Math.cos(phi)*gunLength, player.pos.y + Math.sin(phi)*gunLength, Math.cos(phi)*bulletSpeed + player.vel.x*0.5, Math.sin(phi)*bulletSpeed + player.vel.y*0.5))
+        oldTime = tid
+    }
 }
 
 
 let shopFunctions = [
     function(pris){
-        tankLevel+=1
-        changeTank()
-        let nyPris = pris + 300
-        shopBtns[0].value = `$${nyPris}`
+        if(tankLevel < 7){
+            tankLevel+=1
+            changeTank()
+            let nyPris = pris + 300
+            shopBtns[0].value = `$${nyPris}`
+        }
+        else{
+            shopBtns[0].value = `MAXED OUT`
+        }
     },
     function(pris){
         pierces+=1
@@ -185,7 +271,7 @@ let shopFunctions = [
         shopBtns[1].value = `$${nyPris}`
     },
     function(pris){
-        player.damage+=50
+        player.addedDmg+=50
         let nyPris = pris + 400
         shopBtns[2].value = `$${nyPris}`
     },
@@ -195,7 +281,7 @@ let shopFunctions = [
         shopBtns[3].value = `$${nyPris}`
     },
     function(){
-        console.log("Du kjøpte en HP potion")
+        healthPots.antall += 1
     }
 ]
 
@@ -218,5 +304,6 @@ document.querySelector("#smallTank").addEventListener("click", pickSmallTank)
 document.querySelector("#bigTank").addEventListener("click", pickBigTank)
 window.addEventListener("mousemove", moveMouse)
 window.addEventListener("mousedown", shoot)
+window.addEventListener("mouseup", function(){ mouseIsPressed = false })
 window.addEventListener("keydown", pressDown)
 window.addEventListener("keyup", releaseKey)
