@@ -2,11 +2,11 @@ const canvas = document.querySelector("canvas")
 const overlay = document.querySelector(".overlay")
 const c = canvas.getContext("2d")
 canvas.width = window.innerWidth-400
-canvas.height = window.innerHeight-20
+canvas.height = window.innerHeight-40
 
 
 let tankImg = new Image()
-tankImg.src = "sprites/smallTank7.png"
+tankImg.src = "sprites/smallTank1.png"
 
 
 let type, speed, tid, bulletSpeed, gunLength, playerIsCarrying, hunterSpeed, moneyPerKill, pierces, tankLevel
@@ -18,8 +18,8 @@ function defaultSettings(){
     playerIsCarrying = false
     hunterSpeed = 2
     moneyPerKill = 25
-    pierces = 1
-    tankLevel = 1
+    pierces = 0
+    tankLevel = 4
 }
 defaultSettings()
 
@@ -36,31 +36,31 @@ let tanks = {
             player.health = 400
             healthBar.startHealth = 400
             speed = 3
-            player.color = "blue"
+            tankImg.src = "sprites/smallTank1.png"
         },
         function(){
             if(player.health > 375) player.health = 375 
             healthBar.startHealth = 375
             speed = 4
-            player.color = "purple"
+            tankImg.src = "sprites/smallTank2.pngsprites/"
         },
         function(){
             if(player.health > 350) player.health = 350 
             healthBar.startHealth = 350
             speed = 5
-            player.color = "red"
+            tankImg.src = "sprites/smallTank3.png"
         },
         function(){
             if(player.health > 325) player.health = 325 
             healthBar.startHealth = 325
             speed = 6
-            player.color = "magenta"
+            tankImg.src = "sprites/smallTank4.png"
         },
         function(){
             if(player.health > 300) player.health = 300 
             healthBar.startHealth = 300
             speed = 7
-            player.color = "orange"
+            tankImg.src = "sprites/smallTank5.png"
         },
     ],
     big: [
