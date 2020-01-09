@@ -165,6 +165,28 @@ let weapons = {
 
 const distance = (ob1, ob2) => Math.sqrt(Math.pow(ob2.pos.x-ob1.pos.x, 2) + Math.pow(ob2.pos.y-ob1.pos.y, 2))
 
+
+function startShop(){
+    for(let i = 0; i<shopBtns.length; i++){
+        shopBtns[i].addEventListener("click", function(){
+    
+            let price = Number(shopBtns[i].value.split("").slice(1).join(""))
+    
+            if(player.money >= price){
+                player.money -= price
+                if(i<5) shopFunctions[i](price)
+    
+                else{
+                    weapons[shopBtns[i].name]()
+                    for(let k = 5; k < shopBtns.length; k++){
+                        shopBtns[k].value = shopBtns[k].id
+                    }
+                    shopBtns[i].value = "SELECTED"
+                }
+            }
+        })
+    }
+}
 function changeTank(){
     tanks[type][tankLevel-1]()
 }
@@ -174,12 +196,14 @@ function pickSmallTank(){
     overlay.innerHTML = ""
     type = "small"
     changeTank()
+    startShop()
 }
 function pickBigTank(){
     stop = false
     overlay.innerHTML = ""
     type = "big"
     changeTank()
+    startShop()
 }
 
 
@@ -211,9 +235,13 @@ function restart(){
     player.money = 0
     bulletArr = []
     hunterArr = []
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < shopBtns.length; i++){
         shopBtns[i].value = shopBtns[i].id
     }
+    weapons[shopBtns[5].name]()
+    shopBtns[5].value = "SELECTED"
+
+    
     // pickup1 = new Pickup(100, 100, "pink1", "pink")
     // pickup2 = new Pickup(200, 100, "yellow1", "yellow")
 }
@@ -297,26 +325,6 @@ let shopFunctions = [
 ]
 
 
-
-for(let i = 0; i<shopBtns.length; i++){
-    shopBtns[i].addEventListener("click", function(){
-
-        let price = Number(shopBtns[i].value.split("").slice(1).join(""))
-
-        if(player.money >= price){
-            player.money -= price
-            if(i<5) shopFunctions[i](price)
-
-            else{
-                weapons[shopBtns[i].name]()
-                for(let k = 5; k < shopBtns.length; k++){
-                    shopBtns[k].value = shopBtns[k].id
-                }
-                shopBtns[i].value = "SELECTED"
-            }
-        }
-    })
-}
 
 
 

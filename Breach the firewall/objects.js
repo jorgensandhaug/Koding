@@ -49,6 +49,11 @@ let player = {
             stop = true
             youLose()
         }
+
+        if(this.pos.x < this.r && !controller.d) this.vel.x = 0.01
+        if(this.pos.x > canvas.width-this.r && !controller.a) this.vel.x = -0.01
+        if(this.pos.y > canvas.height-this.r && !controller.w) this.vel.y = -0.01
+        if(this.pos.y < this.r && !controller.s) this.vel.y = 0.01
     }
 }
 
@@ -61,13 +66,13 @@ let healthBar = {
     draw: function(){
         c.beginPath()
         c.fillStyle = this.color
-        c.fillRect(this.leftTop.x, this.leftTop.y, player.health, this.height)
+        c.fillRect(this.leftTop.x, this.leftTop.y, 400*(player.health/this.startHealth), this.height)
         c.strokeStyle = "grey"
-        c.strokeRect(this.leftTop.x, this.leftTop.y, this.startHealth, this.height)
+        c.strokeRect(this.leftTop.x, this.leftTop.y, 400, this.height)
         c.fillStyle = "black"
         c.textAlign = "center"
         c.font = "20px monospace"
-        c.fillText(`You have ${player.health} health`, this.leftTop.x + this.startHealth/2, this.leftTop.y-25)
+        c.fillText(`HP: ${player.health} / ${this.startHealth}`, this.leftTop.x + 200, this.leftTop.y-25)
         c.closePath()
     },
 
