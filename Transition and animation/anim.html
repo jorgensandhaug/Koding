@@ -5,42 +5,44 @@
     <style>
     @keyframes runding{
         0%{
-            transform: rotate(0deg);
+            transform: rotate(-10deg) scale(0.33);
+            filter: hue-rotate(0deg) saturate(70%)
         }
-        50%{
-            transform: rotate(180deg);
+        35%{
+            transform: rotate(0deg) scale(1);
+        }
+        70%{
+            transform: rotate(10deg) scale(0.33);
         }
         100%{
-            transform: rotate(360deg);
+            transform: rotate(350deg) scale(0.33);
+            filter: hue-rotate(360deg) saturate(30%)
         }
     }
+
     img{
         position: absolute;
         top: 43%;
         left: 43%;
-        width: 100px;
-        height: 100px;
+        width: 400px;
+        height: 400px;
         border-radius: 50%;
-        /* background-image: url("https://picsum.photos/100"); */
-        animation: runding 2s linear infinite;
+        animation: runding 3.5s linear infinite;
         transition: all 1s ease-out;
     }
     
     </style>
 </head>
 <body>
-<img src="https://picsum.photos/100"></img>
+<img src="https://picsum.photos/2000"></img>
 <script>
     let img = document.querySelector("img")
 
     window.addEventListener("mousemove", (e) => {
-        img.style.top = e.clientY -50 + "px"
-        img.style.left = e.clientX - 50 + "px"
+        img.style.top = e.clientY -img.height/2 + "px"
+        img.style.left = e.clientX - img.width/2 + "px"
     })
     
-    setInterval(() =>{
-        img.src = "https://picsum.photos/100"
-    }, 1000)
     
     </script>
 
