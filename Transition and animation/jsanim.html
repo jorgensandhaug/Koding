@@ -1,0 +1,35 @@
+<body>
+<script>
+
+let divs = {}
+
+for(let i = 0; i < 100; i++){
+    divs[i] = {div: document.createElement("div")}
+
+
+    divs[i].div.style.width = "50px"
+    divs[i].div.style.height = "50px"
+    divs[i].div.style.position = "absolute"
+    divs[i].div.style.left = "0"
+    divs[i].div.style.top = "0"
+    divs[i].div.style.backgroundColor = `hsla(${Math.floor(Math.random()*360)}, ${Math.floor(Math.random()*50)+50}%, ${Math.floor(Math.random()*20)+50}%, ${Math.random()*0.7+0.3})`
+    divs[i].div.style.transition = "1s ease"
+
+    document.querySelector("body").appendChild(divs[i].div)
+
+
+}
+let animation = setInterval(()=>{
+    for(let i = 0; i < Object.keys(divs).length; i++){
+       divs[i].div.style.top = Math.random()*(window.innerHeight-100)+20 + "px"
+       divs[i].div.style.left = Math.random()*(window.innerWidth-100)+20 + "px"
+       divs[i].div.style.backgroundColor = `hsla(${Math.floor(Math.random()*360)}, ${Math.floor(Math.random()*50)+50}%, ${Math.floor(Math.random()*20)+50}%, ${Math.random()*0.7+0.3})`
+    }
+   }, 1000)
+
+
+
+
+</script>
+
+</body>
