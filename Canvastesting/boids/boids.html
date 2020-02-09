@@ -13,12 +13,14 @@
     const c = canvas.getContext("2d")
     canvas.width = window.innerWidth-20
     canvas.height = window.innerHeight-20
-    let strA = -0.01
-    let strB = 0.0001
-    let strC = 0.01
+    let strA = 0.015
+    let strB = 0.02
+    let strC = 5
+    let mouseStr = 0.1
     let maxSpeed = 5
-    let sightAngle = Math.PI/1.5
+    let sightAngle = Math.PI*1.5
     let sightDist = 100
+    let mouseIsPressed = false
 
     function absCross(v1, v2){
         return v1.x*v2.y-v1.y*v2.x
@@ -26,11 +28,28 @@
     function dot(v1, v2){
         return v1.x*v2.x + v1.y*v2.y
     }
+
+    let mouse = {
+        x: undefined,
+        y: undefined
+    }
+    function mouseMove(e){
+        mouse.x = e.clientX
+        mouse.y = e.clientY
+
+        if(e.type == "mousedown") mouseIsPressed = true
+        else if(e.type == "mouseup") mouseIsPressed = false
+    }
     
+    canvas.addEventListener("mousedown", mouseMove)
+    canvas.addEventListener("mouseup", mouseMove)
+    canvas.addEventListener("mousemove", mouseMove)
+
+
     class Boid{
         constructor(x, y, angle, color, size, index){
             this.mid = {x:x, y:y}
-            this.vel = {x: 0, y:0}
+            this.vel = {x: Math.random()*10-10, y:Math.random()*10-10}
             this.acc = {x:0, y:0}
             this.color = color
             this.angle = angle
@@ -58,8 +77,7 @@
         c.restore()
         }
         update(){
-            // if(this.mid.x > canvas.width + 100 || this.mid.x < -100) this.angle += Math.PI-2*this.angle
-            // if(this.mid.y > canvas.height + 100 || this.mid.y < -100) this.angle -= 2*this.angle
+           
             if(this.mid.x > canvas.width + 100) this.mid.x = -100
             if(this.mid.y > canvas.height + 100) this.mid.y = -100
             if(this.mid.x < -100) this.mid.x = canvas.width + 100
@@ -67,12 +85,13 @@
             this.vel.x += this.acc.x
             this.vel.y += this.acc.y
             this.angle = Math.atan2(this.vel.y, this.vel.x)
-            this.mid.x+=this.vel.x
-            this.mid.y+=this.vel.y
-            // let vecSum = [0, 0]
+            
+            
             let mCenter = [0, 0]
             let velDir = [0, 0]
             let avoidDir = [0, 0]
+            let count1 = 0
+            let count2 = 0
             boidArr.forEach( (boid, index) =>{
                 if(this.index != index){
                     let deltaX = boid.mid.x-this.mid.x
@@ -82,54 +101,75 @@
                     
                     let dist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2))
                     
-                
-
+                    
+                  
                     if(angle2 < sightAngle && angle2 > -sightAngle){
-                        // console.log(dist, angle2)
-                        velDir[0] += boid.vel.x
-                        velDir[1] += boid.vel.y
+                      
                         if(dist < sightDist){
                             avoidDir[0] += -deltaX/Math.pow(dist, 3)
-                            avoidDir[1] += -deltaY/Math.pow(dist, 3)}
+                            avoidDir[1] += -deltaY/Math.pow(dist, 3)
+                            velDir[0] += boid.vel.x-this.vel.x
+                            velDir[1] += boid.vel.y-this.vel.x
+                            count1++
+                            }
                         
                     }
-                mCenter[0] += boid.mid.x-canvas.width/2
-                mCenter[1] += boid.mid.y-canvas.height/2
+                    if(dist < 150){
+                        mCenter[0] += boid.mid.x
+                        mCenter[1] += boid.mid.y
+                        count2++
+                    }
             }
 
             })
-            mCenter[0]/=boidArr.length
-            mCenter[1]/=boidArr.length
-            velDir[1]/=boidArr.length
-            velDir[1]/=boidArr.length
+            if(count2!=0){
+                mCenter[0]/=count2
+                mCenter[1]/=count2
+            }
+            if(count1!=0){
+                velDir[1]/=count1
+                velDir[1]/=count1
+            }
             
-
+            //tegne inn de lokale massesentrene
+            // c.fillStyle = "black"
+            // c.arc(mCenter[0], mCenter[1], 3, 0, Math.PI*2)
+            // c.fill()
 
 
             let angleA = Math.atan2(mCenter[1]-this.mid.y, mCenter[0]-this.mid.x)
             let angleB = Math.atan2(velDir[1], velDir[0])
-            let angleC = Math.atan2(avoidDir[1], avoidDir[0])
-            console.log(angleA, angleB, angleC)
+            // let angleC = Math.atan2(avoidDir[1], avoidDir[0])
+            let mouseAngle = Math.atan2(mouse.y-this.mid.y, mouse.x-this.mid.x)
+            
             let a1 = [strA*Math.cos(angleA), strA*Math.sin(angleA)]
             let a2 = [strB*Math.cos(angleB), strB*Math.sin(angleB)]
-            let a3 = [strC*Math.cos(angleC), strC*Math.sin(angleC)]
+            let a3 = [strC*avoidDir[0], strC*avoidDir[1]]
+            let aMouse = [mouseStr*Math.cos(mouseAngle), mouseStr*Math.sin(mouseAngle)]
 
-            this.acc.x = a1[0]+a2[0]+a3[0]
-            this.acc.y = a1[1]+a2[1]+a3[1]
+            this.acc.x = a1[0]+a3[0]+a2[0]
+            this.acc.y = a1[1]+a3[1]+a2[1]
+
+            if(mouseIsPressed){
+                this.acc.x += aMouse[0]
+                this.acc.y += aMouse[1]
+            }
 
             if(Math.sqrt(Math.pow(this.vel.x, 2)+Math.pow(this.vel.y, 2)) > maxSpeed){
                 this.vel.x = maxSpeed*Math.cos(this.angle)
                 this.vel.y = maxSpeed*Math.sin(this.angle)
             }
+            this.mid.x+=this.vel.x
+            this.mid.y+=this.vel.y
 
             this.draw()
         }
     }
-
+    let colorArr = ["red", "yellow", "blue", "green", "magenta", "purple","pink"]
     let boidArr = []
-    for(let i = 0; i < 100; i++){
-    
-        boidArr.push(new Boid(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*2*Math.PI, "red", 25, i))
+    for(let i = 0; i < 300; i++){
+        
+        boidArr.push(new Boid(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*2*Math.PI-Math.PI, colorArr[Math.floor(Math.random()*colorArr.length)], 15, i))
     }
 
     function loop(){
