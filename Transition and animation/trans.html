@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+    img{
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: all 1.5s ease-out;
+    }
+    </style>
+</head>
+<body>
+    <img src="https://picsum.photos/150/150">
+
+    <script>
+    let img = document.querySelector("img")
+
+    window.addEventListener("click", (e) => {
+        img.style.top = e.clientY-img.height/2 + "px"
+        img.style.left = e.clientX-img.width/2 + "px"
+    })
+    
+    
+    </script>
+</body>
+</html>

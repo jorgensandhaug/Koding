@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+    body{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #overlay{
+        background-color: beige;
+        border-radius: 8px;
+        display: block;
+        padding: 10px;
+        position: absolute;
+        top: 40%;
+        z-index: 10;
+    }
+    #mod{
+        width: 200px;
+    }
+    th, td{
+        padding: 10px 40px 10px 40px;
+    }
+    
+    
+    </style>
+</head>
+<body>
+    <h1>Lovbrudd</h1>
+    <input type="button" value="Åpne/lukk modalvindu" id="mod">
+    <table>
+        <br>
+        <br>
+        <tr><th>År</th> <th>Promillekjøring</th><th>Ulovlig Hast</th></tr>
+    </table>
+    <br><br>
+    <div id="text"></div>
+
+    <br><br><br><br><br><br>
+    <div id="overlay">
+        Skriv inn data <br><br>
+<form id="register">
+<label for="år">År: </label>
+<input type="number" id="år" placeholder="Skriv her..." min = "0" required><br><br>
+<label for="prom">Promille: </label>
+<input type="number" id="prom" placeholder="Skriv her..." min = "0" required><br><br>
+<label for="hast">Hastighet: </label>
+<input type="number" id="hast" placeholder="Skriv her..." min = "0" required><br><br>
+<input type="submit" value="Submit">
+<br>
+<br>
+<input type="button" value="Delete year" id="del">
+<input type="button" value="Update year" id="update">
+
+</form>
+
+
+    </div>
+
+
+    <script>
+    let table = document.querySelector("table")
+    let overlay = document.getElementById("overlay")
+    let form = document.querySelector("form")
+
+    let arr = []
+
+    let displayWindow = () => {overlay.style.display == "none" ? overlay.style.display = "block" : overlay.style.display = "none"}
+
+    let inputs = document.querySelectorAll("input[type='number']")
+    document.getElementById("mod").addEventListener("click", displayWindow)
+    window.addEventListener("keydown", (e) => {if(e.keyCode == 27) displayWindow()})
+    
+
+    function updateText(){
+        let smallest = [Infinity, "år"]
+        arr.forEach( (item, index) => {
+            if( item.prom + item.hast < smallest[0] ){
+                smallest[1] = item.år
+                smallest[0] = item.prom + item.hast
+            }
+        })
+        document.getElementById("text").innerHTML = `Året ${smallest[1]} hadde færrest lovbrudd med kun ${smallest[0]} lovbrudd`
+    }
+
+
+    function updateTable(){
+        table.innerHTML = "<tr><th>År</th> <th>Promillekjøring</th><th>Ulovlig Hast</th></tr>"
+        arr.forEach( x => {
+            table.innerHTML += `<tr><td>${x.år}</td> <td>${x.prom}</td><td>${x.hast}</td></tr>`
+        })
+        updateText()
+        form.reset()
+    }
+
+
+
+
+    function submitNew(e){
+        e.preventDefault()
+        arr.push({år: Number(inputs[0].value), prom: Number(inputs[1].value), hast: Number(inputs[2].value)})
+        updateTable()
+    }
+
+    function delYear(){
+        arr.forEach( (item, index) => {
+            if(item.år == Number(inputs[0].value)){
+                arr.splice(index, 1)
+                updateTable()
+                return
+            }
+        })
+    }
+
+    function updateYear(){
+        arr.forEach( (item, index) => {
+            if(item.år == Number(inputs[0].value)){
+                item.prom = Number(inputs[1].value)
+                item.hast = Number(inputs[2].value)
+                updateTable()
+                return
+            }
+        })
+    }
+
+    
+    form.addEventListener("submit", submitNew)
+    document.getElementById("del").addEventListener("click", delYear)
+    document.getElementById("update").addEventListener("click", updateYear)
+
+
+
+    </script>
+    
+</body>
+</html>
