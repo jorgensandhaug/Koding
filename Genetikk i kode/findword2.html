@@ -15,9 +15,9 @@
     let table = document.querySelector("table")
     let h1 = document.querySelector("h1")
 
-    let mainWord = "hei hei dette er en sang"
+    let mainWord = "This is a PIG"
     let mutationRate = 1 //%
-    let popSize = 200
+    let popSize = 10
     let stop = false
 
     
@@ -29,6 +29,18 @@
             tempWord += randomLetter()
         }
         return tempWord
+    }
+
+    function getRandomParent(arr){
+        let i = 0
+        let r = Math.random()
+
+        while(r > 0){
+            r -= arr[i].prob
+            i++
+        }
+        i--
+        return arr[i]
     }
 
     class DNA{
@@ -44,7 +56,9 @@
                     score += 1
                 }
             }
-            this.fitness = score/mainWord.length
+
+            this.fitness = score
+            currentPopulation.maxScore += this.fitness
         }
 
         combine(dna){
@@ -86,6 +100,8 @@
         }
 
         calcFitness(){
+
+            this.maxScore = 0
             
             for(let i = 0; i < this.population.length; i++){
                 this.population[i].calcFitness()
@@ -93,30 +109,35 @@
                     this.bestFitness = this.population[i].fitness
                     this.bestWord = this.population[i].DNA.join("")
                 }
+            }
 
-                for(let k = 0; k < Math.floor(this.population[i].fitness*100); k++){
-                    this.matingPool.push(this.population[i])
-                }
+            for(let i = 0; i < this.population.length; i++){
+                this.population[i].prob = this.population[i].fitness / this.maxScore
             }
         }
 
         makeNewPop(){
             for(let i = 0; i < popSize; i++){
 
-            let parent1 = this.matingPool[Math.floor(Math.random()*this.matingPool.length)]
-            let parent2 = this.matingPool[Math.floor(Math.random()*this.matingPool.length)]
+            
+            let parent1 = getRandomParent(this.population)
+
+            let parent2 = getRandomParent(this.population)
+
+            console.log(parent1, parent2)
 
             let child = new DNA(parent1.combine(parent2))
 
             child.mutate()
 
-            // console.log(child.fitness)
+
 
             this.population[i] = child
 
-            this.currentGen ++
 
             }
+
+            this.currentGen ++
         }
     }
     
@@ -137,9 +158,9 @@
     }
 
     function displayToHtml(){
-        h1.innerHTML = `${currentPopulation.bestFitness*mainWord.length} / ${mainWord.length}, Best word: ${currentPopulation.bestWord},   Generation: ${currentPopulation.currentGen}`
+        h1.innerHTML = `${currentPopulation.bestFitness} / ${mainWord.length}, Best word: ${currentPopulation.bestWord},   Generation: ${currentPopulation.currentGen}`
 
-        // table.innerHTML = ""
+        table.innerHTML = ""
         // for(let i = 0; i < currentPopulation.population.length; i+=8){
         //     table.innerHTML += `<tr>
         //     <td>${currentPopulation.population[i].DNA.join("")}</td>
@@ -157,6 +178,7 @@
     function loop(){
         if(!stop){
 
+
         requestAnimationFrame(loop)
 
         //calculates fitness, and fill matingPool according to fitness
@@ -171,7 +193,7 @@
         //displays to html
         displayToHtml()
 
-        if(currentPopulation.bestWord == mainWord) stop = true
+        if(currentPopulation.currentGen >= 1) stop = true
         }
 
     }

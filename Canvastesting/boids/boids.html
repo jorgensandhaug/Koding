@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+    const canvas = document.querySelector("canvas")
+    const c = canvas.getContext("2d")
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+    let strA = -0.01
+    let strB = 0.0001
+    let strC = 0.01
+    let maxSpeed = 5
+    let sightAngle = Math.PI/1.5
+    let sightDist = 100
+
+    function absCross(v1, v2){
+        return v1.x*v2.y-v1.y*v2.x
+    }
+    function dot(v1, v2){
+        return v1.x*v2.x + v1.y*v2.y
+    }
+    
+    class Boid{
+        constructor(x, y, angle, color, size, index){
+            this.mid = {x:x, y:y}
+            this.vel = {x: 0, y:0}
+            this.acc = {x:0, y:0}
+            this.color = color
+            this.angle = angle
+            this.size = size
+            this.index = index
+        }
+        draw(){
+        c.beginPath()
+        c.save()
+        c.translate(this.mid.x, this.mid.y)
+        c.rotate(this.angle+Math.PI/2)
+        c.translate(-this.mid.x, -this.mid.y)
+        c.fillStyle = this.color
+        c.moveTo(this.mid.x, this.mid.y-this.size/Math.sqrt(3))
+        c.lineTo(this.mid.x+this.size/2, this.mid.y+this.size/Math.sqrt(12))
+        c.lineTo(this.mid.x-this.size/2, this.mid.y+this.size/Math.sqrt(12))
+        c.lineTo(this.mid.x, this.mid.y-this.size/Math.sqrt(3))
+        c.fill()
+        c.closePath()
+        c.beginPath()
+        c.fillStyle = "blue"
+        c.arc(this.mid.x, this.mid.y-this.size/Math.sqrt(3), 1, 0, Math.PI*2)
+        c.fill()
+        c.closePath()
+        c.restore()
+        }
+        update(){
+            // if(this.mid.x > canvas.width + 100 || this.mid.x < -100) this.angle += Math.PI-2*this.angle
+            // if(this.mid.y > canvas.height + 100 || this.mid.y < -100) this.angle -= 2*this.angle
+            if(this.mid.x > canvas.width + 100) this.mid.x = -100
+            if(this.mid.y > canvas.height + 100) this.mid.y = -100
+            if(this.mid.x < -100) this.mid.x = canvas.width + 100
+            if(this.mid.y < -100) this.mid.y = canvas.height + 100
+            this.vel.x += this.acc.x
+            this.vel.y += this.acc.y
+            this.angle = Math.atan2(this.vel.y, this.vel.x)
+            this.mid.x+=this.vel.x
+            this.mid.y+=this.vel.y
+            // let vecSum = [0, 0]
+            let mCenter = [0, 0]
+            let velDir = [0, 0]
+            let avoidDir = [0, 0]
+            boidArr.forEach( (boid, index) =>{
+                if(this.index != index){
+                    let deltaX = boid.mid.x-this.mid.x
+                    let deltaY = boid.mid.y-this.mid.y
+                    let angle1 = Math.atan2(deltaY, deltaX)
+                    let angle2 = Math.atan2(absCross({x: deltaX, y:deltaY}, this.vel), dot({x: deltaX, y:deltaY}, this.vel))
+                    
+                    let dist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2))
+                    
+                
+
+                    if(angle2 < sightAngle && angle2 > -sightAngle){
+                        // console.log(dist, angle2)
+                        velDir[0] += boid.vel.x
+                        velDir[1] += boid.vel.y
+                        if(dist < sightDist){
+                            avoidDir[0] += -deltaX/Math.pow(dist, 3)
+                            avoidDir[1] += -deltaY/Math.pow(dist, 3)}
+                        
+                    }
+                mCenter[0] += boid.mid.x-canvas.width/2
+                mCenter[1] += boid.mid.y-canvas.height/2
+            }
+
+            })
+            mCenter[0]/=boidArr.length
+            mCenter[1]/=boidArr.length
+            velDir[1]/=boidArr.length
+            velDir[1]/=boidArr.length
+            
+
+
+
+            let angleA = Math.atan2(mCenter[1]-this.mid.y, mCenter[0]-this.mid.x)
+            let angleB = Math.atan2(velDir[1], velDir[0])
+            let angleC = Math.atan2(avoidDir[1], avoidDir[0])
+            console.log(angleA, angleB, angleC)
+            let a1 = [strA*Math.cos(angleA), strA*Math.sin(angleA)]
+            let a2 = [strB*Math.cos(angleB), strB*Math.sin(angleB)]
+            let a3 = [strC*Math.cos(angleC), strC*Math.sin(angleC)]
+
+            this.acc.x = a1[0]+a2[0]+a3[0]
+            this.acc.y = a1[1]+a2[1]+a3[1]
+
+            if(Math.sqrt(Math.pow(this.vel.x, 2)+Math.pow(this.vel.y, 2)) > maxSpeed){
+                this.vel.x = maxSpeed*Math.cos(this.angle)
+                this.vel.y = maxSpeed*Math.sin(this.angle)
+            }
+
+            this.draw()
+        }
+    }
+
+    let boidArr = []
+    for(let i = 0; i < 100; i++){
+    
+        boidArr.push(new Boid(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*2*Math.PI, "red", 25, i))
+    }
+
+    function loop(){
+        requestAnimationFrame(loop)
+        c.fillStyle = "beige"
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        
+        boidArr.forEach(boid =>{
+            boid.update()
+           
+        })
+    }
+    loop()
+    </script>
+    
+</body>
+</html>
