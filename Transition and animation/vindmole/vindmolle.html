@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    body{
+        background: url(bakgrunn2.jpg);
+        background-repeat: no-repeat;
+    }
+    #stamme{
+        position: absolute;
+        top: 150px;
+        left: 700px;
+    }
+    #rotor{
+        position: absolute;
+        top: -45px;
+        left: 534px;
+    }
+
+    </style>
+    
+</head>
+<body>
+    <select>
+<option>Stille</option>
+<option>Lett bris</option>
+<option>Stiv kuling</option>
+
+    </select>
+    <img src="bjork.png">
+    <img src="stamme.png" id="stamme">
+    <img src="rotor.png" id="rotor">
+    
+    <script>
+    
+    let rotor = document.getElementById("rotor")
+    let phi = 0
+    let speed = 0.2
+    let speeds = [0.2, 1, 3]
+    let select = document.querySelector("select")
+    select.addEventListener("change", ()=>{
+        speed = speeds[select.selectedIndex]
+    })
+
+    function loop(){
+        requestAnimationFrame(loop)
+        rotor.style.transform = `rotate(${phi}deg)`
+        phi+=speed
+    }
+    loop()
+    
+    
+    </script>
+</body>
+</html>

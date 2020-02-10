@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 96vh
+        }
+        #displayEl{
+            color: white;
+            background: red;
+            width: 0px;
+            height: 25px;
+            text-align: center;
+        }
+    
+    </style>
+</head>
+<body>
+    <img>
+    <div id="displayEl">Energy used</div>
+    <audio src="fulllyd.mp3" autoplay></audio>
+    <script>
+
+    let img = document.querySelector("img")
+    let audio = document.querySelector("audio")
+    let displayEl = document.getElementById("displayEl")
+    let w
+    function loop(){
+        w = 0
+        progress(90*8, 4)
+        img.src = "søvn.jpg"
+        audio.src = "søvn.mp3"
+
+        setTimeout(() => {
+            progress(110*6, 3)
+            img.src = "skole.jpg"
+            audio.src = "skole.mp3"
+        }, 4000)
+        setTimeout(() => {
+            progress(130*4, 2)
+            img.src = "aktiv_fritid_basket.jpg"
+            audio.src = "aktiv_fritid_basket.mp3"
+        }, 7000)
+        setTimeout(() => {
+            progress(110*6, 3)
+            img.src = "hvile_filmpublikum.jpg"
+            audio.src = "hvile_samtale.mp3"
+        }, 9000)
+    }
+
+    function progress(num, time){
+        w += num/5
+        displayEl.style.transition = "width "+time+"s"
+        displayEl.style.width = w + "px"
+    }
+    loop()
+    setInterval(loop, 12000)
+ 
+  
+    
+    </script>
+</body>
+</html>
