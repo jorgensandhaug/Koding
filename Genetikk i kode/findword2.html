@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1></h1>
+
+    <table>
+
+    </table>
+
+    <script>
+
+    let table = document.querySelector("table")
+    let h1 = document.querySelector("h1")
+
+    let mainWord = "This is a PIG"
+    let mutationRate = 1 //%
+    let popSize = 10
+    let stop = false
+
+    
+
+    let randomLetter = () => String.fromCharCode(Math.floor(Math.random()*123))
+    function randomWord(){
+        let tempWord = ""
+        for(let i = 0; i < mainWord.length; i++){
+            tempWord += randomLetter()
+        }
+        return tempWord
+    }
+
+    function getRandomParent(arr){
+        let i = 0
+        let r = Math.random()
+
+        while(r > 0){
+            r -= arr[i].prob
+            i++
+        }
+        i--
+        return arr[i]
+    }
+
+    class DNA{
+        constructor(word){
+            this.DNA = word.split("")
+            this.fitness = 0
+        }
+
+        calcFitness(){
+            let score = 0
+            for(let i = 0; i < mainWord.length; i++){
+                if(this.DNA[i] === mainWord[i]){
+                    score += 1
+                }
+            }
+
+            this.fitness = score
+            currentPopulation.maxScore += this.fitness
+        }
+
+        combine(dna){
+            let midpoint = Math.floor(Math.random()*this.DNA.length)
+            // console.log(midpoint)
+
+            let child = []
+
+            for(let i = 0; i < this.DNA.length; i++){
+                if(i < midpoint) child.push(this.DNA[i])
+                else child.push(dna.DNA[i])
+            }
+            // console.log(child.join(""))
+            return child.join("")
+        }
+
+        mutate(){
+            for(let i = 0; i < this.DNA; i++){
+                if(Math.random()*100 < mutationRate){
+                    this.DNA[i] = randomLetter()
+                }
+            }
+        }
+    }
+
+    class Population{
+        constructor(){
+            this.population = []
+            this.matingPool = []
+            this.bestFitness = 0
+            this.bestWord = ""
+            this.currentGen = 0
+        }
+
+        createRandomPop(){
+            for(let i = 0; i < popSize; i++){
+                this.population.push(new DNA(randomWord()))
+            }
+        }
+
+        calcFitness(){
+
+            this.maxScore = 0
+            
+            for(let i = 0; i < this.population.length; i++){
+                this.population[i].calcFitness()
+                if(this.population[i].fitness > this.bestFitness){
+                    this.bestFitness = this.population[i].fitness
+                    this.bestWord = this.population[i].DNA.join("")
+                }
+            }
+
+            for(let i = 0; i < this.population.length; i++){
+                this.population[i].prob = this.population[i].fitness / this.maxScore
+            }
+        }
+
+        makeNewPop(){
+            for(let i = 0; i < popSize; i++){
+
+            
+            let parent1 = getRandomParent(this.population)
+
+            let parent2 = getRandomParent(this.population)
+
+            console.log(parent1, parent2)
+
+            let child = new DNA(parent1.combine(parent2))
+
+            child.mutate()
+
+
+
+            this.population[i] = child
+
+
+            }
+
+            this.currentGen ++
+        }
+    }
+    
+    let currentPopulation = new Population([])
+    currentPopulation.createRandomPop()
+
+    let biggest, best
+
+    function findBest(){
+        biggest = 0
+        best = ""
+        for(let i = 0; i < currentPopulation.population.length; i++){
+            if(currentPopulation.population[i].fitness > biggest){
+                biggest = currentPopulation.population[i].fitness
+                best = currentPopulation.population[i].DNA.join("")
+            }
+        }
+    }
+
+    function displayToHtml(){
+        h1.innerHTML = `${currentPopulation.bestFitness} / ${mainWord.length}, Best word: ${currentPopulation.bestWord},   Generation: ${currentPopulation.currentGen}`
+
+        table.innerHTML = ""
+        // for(let i = 0; i < currentPopulation.population.length; i+=8){
+        //     table.innerHTML += `<tr>
+        //     <td>${currentPopulation.population[i].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+1].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+2].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+3].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+4].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+5].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+6].DNA.join("")}</td>
+        //     <td>${currentPopulation.population[i+7].DNA.join("")}</td>
+        //     </tr>`
+        // }
+    }
+
+    function loop(){
+        if(!stop){
+
+
+        requestAnimationFrame(loop)
+
+        //calculates fitness, and fill matingPool according to fitness
+        currentPopulation.calcFitness()
+
+        //makes new population based on the fitness values
+        currentPopulation.makeNewPop()
+
+        //finds current best word
+        findBest()
+
+        //displays to html
+        displayToHtml()
+
+        if(currentPopulation.currentGen >= 1) stop = true
+        }
+
+    }
+
+    loop()
+   
+    
+    </script>
+    
+</body>
+</html>

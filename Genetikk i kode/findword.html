@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>
+    </h1>
+
+<script>
+    let pop = 2000
+    let matingPool = []
+    let mutationRate = 1
+    let h1 = document.querySelector("h1")
+    let word = "heiheiheipådeg"
+    let arr = []
+    function newLetter(){
+        return String.fromCharCode(Math.floor(Math.random()*123))
+    }
+    for(let i = 0; i < pop; i++){
+        let ord = ""
+        for(let k = 0; k < word.length; k++){
+            ord+= newLetter()
+        }
+        arr.push({word: ord, fitness:0})
+    }
+
+    let biggest = 0
+    let bestWord = ""
+
+    let testInter = setInterval(()=>{
+        
+        for(let i = 0; i < arr.length; i++){
+        
+        for(let j = 0; j < arr[i].word.length; j++){
+            if(arr[i].word[j] === word[j]){
+                arr[i].fitness+=1
+            }
+        }
+
+        if(arr[i].fitness == 0){
+            arr[i].word = ""
+            for(let k = 0; k < word.length; k++){
+            arr[i].word+= newLetter()
+            }
+        }
+        
+        if(arr[i].fitness > biggest){
+            biggest = arr[i].fitness
+            bestWord = arr[i].word
+        }
+    }
+
+    h1.innerHTML = bestWord
+ 
+
+    matingPool = []
+
+    for(let i = 0; i < arr.length; i++){
+        for(let x = 0; x < arr[i].fitness*100; x++){
+            matingPool.push(arr[i].word)
+        }
+    }
+
+    
+    let nyArr = []
+    for(let i = 0; i < pop; i++){
+        let parent1 = matingPool[Math.floor(Math.random()*matingPool.length)]
+        let parent2 = matingPool[Math.floor(Math.random()*matingPool.length)]
+        let random = Math.floor(Math.random()*parent1.length-1) + 1
+        
+        arr[i] = {word: parent1.split("").slice(random).join("") + parent2.split("").slice(0, random).join(""), fitness: 0}
+
+        for(let k = 0; k < arr[i].length; k++){
+            if(Math.random() < mutationRate/100) nyArr[i][k] = newLetter()
+        }
+    }
+    arr[0] = {word: bestWord, fitness: 0}
+
+    console.log(biggest)
+
+    if(bestWord == word) clearInterval(testInter)
+
+    }, 0.1)
+    
+
+    
+    
+
+
+</script>
+    
+</body>
+</html>
