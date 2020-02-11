@@ -75,7 +75,7 @@
         c.arc(this.mid.x, this.mid.y-this.size/Math.sqrt(3), 1, 0, Math.PI*2)
         if(this.index == 0){
             c.fillStyle = "rgb(0, 0, 0, 0.4)"
-            c.arc(this.mid.x, this.mid.y, 50, -sightAngle-Math.PI/2, sightAngle-Math.PI/2)
+            c.arc(this.mid.x, this.mid.y, sightDist, -sightAngle-Math.PI/2, sightAngle-Math.PI/2)
         }
         c.fill()
         c.closePath()
@@ -113,11 +113,11 @@
                         if(dist < sightDist){
                             avoidDir[0] += -deltaX/Math.pow(dist, 3)
                             avoidDir[1] += -deltaY/Math.pow(dist, 3)
-                           
+                            if(Math.sqrt(Math.pow(boid.vel.x, 2)+Math.pow(boid.vel.y, 2)) > 2){
                                 velDir[0] += boid.vel.x
                                 velDir[1] += boid.vel.y
                                 count1++
-                            
+                            }
                             }
                         
                     }
