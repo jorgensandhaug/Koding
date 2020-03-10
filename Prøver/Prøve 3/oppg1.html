@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background: beige;
+        }
+
+        /* den som wrapper alle de "klikkbare" bildene */
+        #bilder{
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* bevegelsen til skøyteløperen */
+        @keyframes skoyteloper{
+            0% {
+                left: 0;
+                transform: rotateY(0deg) scale(.4)
+            }
+            30%{
+                transform: rotateY(30deg) scale(.4);
+            }
+            50%{
+                left: 50vw;
+                transform: rotateY(180deg) scale(.4);
+            }
+            80%{
+                transform: rotateY(150deg) scale(.4);
+            }
+            100%{
+                left: 0;
+                transform: rotateY(0deg) scale(.4)
+            }
+        }
+
+        /* skøyteløperen som beveger seg */
+        #anim{
+            display: none;
+            position: absolute;
+            top: 30vh;
+            left: 100px;
+            animation: skoyteloper 1.5s infinite ease-in-out;
+        }
+
+
+        video{
+            display: none;
+            margin: auto;
+        }
+
+        /* litt styling for lukke-knappen */
+        input[type="button"] {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 15px 25px;
+            margin-top: 5px;
+            margin-bottom: 48px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #DC143C;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+        }
+
+        input[type="button"]:hover {
+            background-color: #3e8e41
+        }
+
+        input[type="button"]:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+
+        #lukkbtn{
+            display: none;
+        }
+        /* få litt plass mellom bildene */
+        img{
+            margin: 30px;
+        }
+        h1{
+            font-family: monospace;
+        }
+        #startText{
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="bilder">
+        <img src="hopp.png" id="hopp">
+        <img src="skoyter.png" id="skoyter">
+        <img src="curling.png">
+        <img src="snowboard.png">
+        <img src="hockey.png">
+    </div>
+    <!-- har en mini-forklaring til bruker som kun står der når det ikke skjer noe annet -->
+    <div id="startText"><h1>Trykk på noen av bildene og se hva som skjer!</h1></div>
+    
+    <img src="vedlegg_prøve3/skoyteloper.png" id="anim">
+
+    <video src="hoppklipp.mp4"></video>
+
+    <input type="button" id="lukkbtn" value="Lukk video">
+
+    <script>
+
+        //lager lydfilen så den er klar til å brukes
+        let skoytelyd = new Audio()
+        skoytelyd.src = "vedlegg_prøve3/skoytelyd.wav"
+       
+        
+        //henter inn elementer fra html
+        let hoppklipp = document.querySelector("video")
+        let anim = document.getElementById("anim")
+        let hopp = document.getElementById("hopp")
+        let skoyter = document.getElementById("skoyter")
+        let bilder = document.getElementById("bilder")
+        let lukkbtn = document.getElementById("lukkbtn")
+        let startText = document.getElementById("startText")
+
+
+
+        //setter på en eventlistener på de to spesifikke bildene
+        skoyter.addEventListener("click", ()=>{
+            skoytelyd.currentTime = 0
+            skoytelyd.play()
+            anim.style.display = "block"
+            startText.style.display = "none"
+        })
+
+
+        // når bruker trykker på video, vises kun videoen helt fram til den er ferdig,
+        // da kommer de klikkbare bildene tilbake igjen (evt kan bruker trykke på lukkknappen)
+        hopp.addEventListener("click", ()=>{
+            startText.style.display = "none"
+            hoppklipp.style.display = "block"
+            hoppklipp.currentTime = 0
+            hoppklipp.play()
+            skoytelyd.pause()
+            anim.style.display = "none"
+            bilder.style.display = "none"
+            lukkbtn.style.display = "inline-block"
+        })
+
+        //funksjonen som lukker videoen og henter tilbake bildene
+        function lukk(){
+            hoppklipp.style.display = "none"
+            bilder.style.display = "flex"
+            lukkbtn.style.display = "none"
+            startText.style.display = "block"
+        }
+        hoppklipp.addEventListener("ended", lukk)
+        lukkbtn.addEventListener("click", lukk)
+
+    </script>
+
+</body>
+</html>

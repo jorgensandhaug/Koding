@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    #bilde{
+        display: none;
+        position: absolute;
+        top: 30vh;
+        left: 120vw;
+        transition: left 3s ease-out;
+        border: 0px solid black;
+    }
+
+    input[type="button"] {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 15px 25px;
+    margin-top: 5px;
+    margin-bottom: 48px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #DC143C;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    }
+    input[type="button"]:hover {
+        background-color: #3e8e41
+    }
+
+    input[type="button"]:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+    }
+    #wrapper{
+        display: flex;
+        flex-direction: row;
+        z-index: 10;
+    }
+    </style>
+</head>
+
+<body>
+    <img src="vedlegg_prøve3/ski.jpg" id="bilde">
+        <div id="wrapper">
+        <h1>Velg bildestørrelse:</h1>
+        <input type="button" value="Liten">
+        <input type="button" value="Medium">
+        <input type="button" value="Stor">
+    </div>
+    <script>
+
+        //henter inn elementer fra html
+        let img = document.getElementById("bilde")
+        let btns = document.querySelectorAll("input[type='button']")
+        let wrapper = document.getElementById("wrapper")
+
+        //funksjon som kjøres når en av knappene blir trykket på
+        function run(e){
+            //endres størrelsene på bildet utifra hvilken knapp man trykket på
+            if(e.target.value == "Liten"){
+                console.log(img.width)
+                img.width*=0.05
+                img.height*=0.05
+            }
+            else if(e.target.value == "Medium"){
+                img.width*=0.1
+                img.height*=0.1
+            }
+            else if(e.target.value == "Stor"){
+                img.width*=0.15
+                img.height*=0.15
+            }
+            //setter top og left slik at bildet kommer i midten av skjermen(har transition på left)
+            img.style.display = "block"
+            img.style.top = `${window.innerHeight/2 - (img.height/2)}px`
+            img.style.left = `${window.innerWidth/2 - (img.width/2)}px`
+
+            //fyller wrapperen med en ny type input for at brukeren skal kunne velge farge på rammen
+            wrapper.innerHTML = `
+            <h1>Velg farge på bilderammen:</h1>
+            <input type="color">
+            `
+            //henter inn inputen
+            let colorPicker = document.querySelector("input[type='color']")
+
+            //gjør nødvendige endringer i stylen når fargeinputen får en fargeverdi (hex)
+            colorPicker.addEventListener("input", (e)=>{
+                img.style.transition = "border 3s linear"
+                img.style.border = `15px solid ${colorPicker.value}`
+            })
+
+        }
+
+        //sørger for at alle 3 knappene er trykkbare, og kjører run-funksjonen
+        for(let i = 0; i < btns.length; i++){
+            btns[i].addEventListener("click", run)
+        }
+
+    </script>
+    
+</body>
+</html>

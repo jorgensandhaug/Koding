@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+
+        const canvas = document.querySelector("canvas")
+        const c = canvas.getContext("2d")
+        canvas.width = window.innerWidth-20
+        canvas.height = window.innerHeight-20
+        let mouse = {
+            x: undefined,
+            y: undefined
+        }
+
+        window.addEventListener("mousemove", (e)=>{
+            mouse.x = e.clientX
+            mouse.y = e.clientY
+        })
+
+        function drawCircle(){
+            let distance = dist(canvas.width/2, canvas.height/2, mouse.x, mouse.y)
+            let r = 8000/distance
+            for(let y = mouse.y-r; y < mouse.y+r; y++){
+                for(let x = mouse.x-r; x < mouse.x + r; x++){
+                    if(dist(mouse.x, mouse.y, x, y) < r){
+                        let color = `hsl(${x}, ${y}%, 50%)`
+                        c.fillStyle = color
+                        c.fillRect(x, y, 1, 1)
+                    }
+                }
+            }
+
+            
+            // c.beginPath()
+            // c.fillStyle = color
+            // c.arc(mouse.x, mouse.y, r, 0, Math.PI*2)
+            // c.fill()
+            // c.closePath()
+        }
+        const dist = (x1, y1, x2, y2) => Math.sqrt(Math.pow(y2-y1, 2) + Math.pow(x2-x1, 2))
+        function loop(){
+            requestAnimationFrame(loop)
+            c.fillStyle = "black"
+            c.fillRect(0, 0, canvas.width, canvas.height)
+            drawCircle()
+            
+        }
+        loop()
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #inputs{
+            display: flex;
+            flex-direction: row;
+        }
+        .person{
+            margin: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Heiskortbestilling</h1>
+    Legg til flere heiskort: <input type="button" id="leggtil" value="Legg til personer">
+    <form>
+        <div id="inputs">
+            <div class="person">
+                Antall dager: <br><input type="number" min="0" max="7"><br><br>
+            Alder: (16 år regnes som voksen): <br><input type="number" min="0" max="100"><br><br>
+            </div> 
+            
+        </div>
+        <input type="submit">
+        <div id="result"></div>
+
+    </form>
+    
+    <script>
+        let form = document.querySelector("form")
+        let result = document.getElementById("result")
+        let inputDiv = document.getElementById("inputs")
+        let leggtil = document.getElementById("leggtil")
+        console.log(result.innerHTML)
+
+        leggtil.addEventListener("click", ()=>{
+            inputDiv.innerHTML+= `
+            <div class="person">
+                Antall dager: <br><input type="number" min="0" max="7"><br><br>
+                Alder: (16 år regnes som voksen): <br><input type="number" min="0" max="100"><br><br>
+            </div> 
+            `
+        })
+
+       
+        form.addEventListener("submit", (e)=>{
+
+            e.preventDefault()
+
+            let inpts = document.querySelectorAll("input[type='number']")
+
+            let totPris = 0
+            let totAvslag = 0
+
+            for(let i = 0; i < inpts.length; i+=2){
+
+            let dager = Number(inpts[i].value)
+            let alder = Number(inpts[i+1].value)
+            
+            
+            let voksen = (alder>=16)? true : false
+
+            totPris += dager*(voksen?200:100)
+            totAvslag += (voksen? (pris>1000 ? pris-1000 : 0) : (pris>500 ? pris-500 : 0))
+        }
+
+            result.innerHTML = `Den totale prisen er: ${totPris-totAvslag}kr`
+            if(totAvslag>0) result.innerHTML += `, og du fikk en rabatt på hele ${totAvslag}kr`
+        })
+    </script>
+    
+</body>
+</html>
