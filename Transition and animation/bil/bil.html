@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+    const canvas = document.querySelector("canvas")
+    canvas.width = window.innerWidth-20
+    canvas.height = window.innerHeight-20
+    const c = canvas.getContext("2d")
+    let breakAudio = new Audio()
+    breakAudio.src = "break.mp3"
+    let kjorAudio = new Audio()
+    kjorAudio.src = "kjor.mp3"
+    let bakgrunn = new Image()
+    bakgrunn.src = "bgr.png"
+    let bilImg = new Image()
+    bilImg.src = "bilen.png"
+    let felgImg = new Image()
+    felgImg.src = "bakhjul.png"
+    let alpha = 0
+    let isReversed = false
+    let brems = true
+    let bil = {
+        pos: [-500, 350],
+        vel: 0,
+        acc: 0.1
+    }
+    let felger = [
+        [bil.pos[0]+78, bil.pos[1]+100],
+        [bil.pos[0]+412, bil.pos[1]+100]
+        ]
+
+
+    function tegnFelger(){
+        for(let i = 0; i < 2; i++){
+            c.save()
+            c.translate(felger[i][0]+felgImg.width/2, felger[i][1]+felgImg.height/2)
+            c.rotate(alpha)
+            c.translate(-(felger[i][0]+felgImg.width/2), -(felger[i][1]+felgImg.height/2))
+            c.drawImage(felgImg, 0, 0, felgImg.width, felgImg.height, felger[i][0], felger[i][1], felgImg.width, felgImg.height)
+            c.restore()
+        }
+    }
+
+    function loop(){
+        requestAnimationFrame(loop)
+        c.drawImage(bakgrunn, 0, 0, bakgrunn.width, bakgrunn.height, 0, 0, bakgrunn.width*1.8, bakgrunn.height*1.5)
+        bil.vel+=bil.acc
+        bil.pos[0]+=bil.vel
+        felger.forEach(item =>{
+            item[0]+=bil.vel
+        })
+        alpha += bil.vel/100
+        c.drawImage(bilImg, 0, 0, bilImg.width, bilImg.height, bil.pos[0], bil.pos[1], bilImg.width, bilImg.height)
+        tegnFelger()
+
+        if(bil.pos[0] > 350 && brems){
+            bil.acc = -0.3
+            breakAudio.currentTime = 2
+            breakAudio.play()
+            brems = false
+        }
+        if(bil.vel < 0 && !isReversed){
+            bil.vel = 0
+            bil.acc = 0
+            setTimeout(()=>{
+                bil.vel = -1.7
+                isReversed = true
+            }, 1000)
+        }
+        if(isReversed && bil.pos[0] < 300){
+            bil.vel = 0
+            isReversed = false
+            setTimeout(()=>{
+                bil.acc = 1
+            }, 3000)
+            setTimeout(()=>{
+                kjorAudio.play()
+            }, 2500)
+        }
+    }
+    loop()
+    
+    
+    
+    
+    </script>
+    
+</body>
+</html>

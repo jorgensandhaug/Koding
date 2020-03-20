@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #spole{
+            position: absolute;
+            top: 100px;
+            left: 400px;
+            z-index: 10;
+        }
+        #magnet{
+            position: absolute;
+        }
+
+    </style>
+</head>
+<body>
+    <img src="spole.png" id="spole">
+    <img src="magnet.jpg" id="magnet">
+    <script>
+
+        let magnet = document.getElementById("magnet")
+        
+        window.addEventListener("mousemove", (e)=>{
+            magnet.style.top = `${e.clientY-90}px`
+            magnet.style.left = `${e.clientX-60}px`
+        })
+    </script>
+</body>
+</html>
