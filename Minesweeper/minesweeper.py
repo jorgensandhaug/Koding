@@ -7,8 +7,8 @@ root = Tk()
 
 #definerer størrelser
 scale = 4
-width = 15
-height = 15
+width = 20
+height = 20
 mineProb = 0.1
 arena = []
 buttons = []
