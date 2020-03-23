@@ -1,15 +1,44 @@
 from tkinter import *
 from functools import partial
 import random
+import math
+import time
+
+
+#får brukeren til å velge størrelse på brettet og setter variablene utifra det
+size = 10
+def checkSize():
+    w = int(input("Skriv inn størrelse på brettet, eks: 10, 20 (maks 28)"))
+    # w = int(input("Skriv inn størrelse på brettet, eks: 10, 20 (maks 28)"))
+
+    if w > 28:
+        w = checkSize()
+    return w
+
+size = checkSize()
+width = size
+height = size
+if size > 14:
+    scale = 2
+else:
+    scale = 4
+
+# får brukeren til å velge vanskelighetsgrad
+
+#funksjon som sørger for at det ikke kan være flere miner enn ruter
+antallMiner = size
+def checkMines():
+    a = int(input(f'Velg antall miner (maks: {size*size})'))
+    if a > size*size:
+        a = checkMines()
+    return a
+antallMiner = checkMines()
+
 
 #initializer selve grafikk-programmet
 root = Tk()
 
-#definerer størrelser
-scale = 4
-width = 20
-height = 20
-mineProb = 0.1
+
 arena = []
 buttons = []
 
@@ -21,10 +50,15 @@ for i in range(height):
 # fyller den "usynlige" arenaen med noen miner og resten nuller
 for i in arena:
     for k in range(width):
-        if random.uniform(0, 1) < mineProb:
-            i.append("x")
-        else:
             i.append(0)
+
+counter = 0
+while counter < antallMiner:
+    y = math.floor(random.uniform(0, height))
+    x = math.floor(random.uniform(0, width))
+    if arena[y][x] == 0:
+        arena[y][x] = "x"
+        counter += 1
 
 # funksjon som finner antall miner rundt en boks
 def calcMines(x, y):
@@ -83,14 +117,23 @@ def openButton(x, y):
 # funksjonen som kjører når man venstreklikker på en boks
 # åpner opp den boksen man trykker på, men hvis det er en mine så taper man spillet
 def leftClick(x, y):
-    if arena[y][x] != "x" and buttons[y][x]['text'] != "m":
-        openButton(x, y)
+    global root
+    if buttons[y][x]['text'] != "m":
+        if arena[y][x] != "x":
+            openButton(x, y)
 
-        if arena[y][x] == "0":
-            open(x, y)
-    elif arena[y][x] == "x":
-        root.destroy()
-        print("Du Tapte")
+            if arena[y][x] == "0":
+                open(x, y)
+        elif arena[y][x] == "x":
+            print("Du Tapte")
+
+            root.destroy()
+            root = Tk()
+            
+            restartBtn = Button(root, text="You Lost \n \n Click to quit", width = 50, 
+            height = 20, bg="red", fg="white", font=("Times New Roman", 12, "bold"), command=lambda: root.destroy())
+            restartBtn.grid(row=0, column=0)
+
 
 # funksjonen som kjører når man høyreklikker på en boks
 # markerer boksen man trykker på eller tar bort markeringen
@@ -109,7 +152,7 @@ def rightClick(x, y):
 def drawArena():
     for y in range(height):
         for x in range(width):
-            buttons[y].append(Button(root, width = scale, height = int(scale/2), bg="blue", fg="white"))
+            buttons[y].append(Button(root, width = scale, height = int(scale/2), bg="#6699cc", fg="white"))
 
             buttons[y][x].bind('<Button-1>', lambda event, arg1=x, arg2=y : leftClick(arg1, arg2))
             buttons[y][x].bind('<Button-3>', lambda event, arg1=x, arg2=y : rightClick(arg1, arg2))
