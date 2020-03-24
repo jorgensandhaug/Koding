@@ -1,0 +1,4 @@
+Spillet Minesweeper går ut på at spilleren skal finne og markere alle minene på brettet. Disse minene er skjult, og den eneste indikasjonen man har på hvor det finnes miner er
+ved de ulike tallene som står rundt på brettet. Disse tallene indikerer hvor mange miner som finnes (i de 8 rutene) rundt tallet, og ved hjelp av dette skal man kunne
+gjenkjenne hvor minene er og åpne de rutene der det ikke er miner. Dersom spilleren prøver å åpne en rute der det finnes en mine så taper han spillet. Spillet vinnes når
+spilleren har klart å markere alle minene korrekt.

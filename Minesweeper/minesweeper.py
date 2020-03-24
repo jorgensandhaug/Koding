@@ -2,44 +2,43 @@ from tkinter import *
 from functools import partial
 import random
 import math
-import time
 
 
-#får brukeren til å velge størrelse på brettet og setter variablene utifra det
-size = 10
-def checkSize():
-    w = int(input("Skriv inn størrelse på brettet, eks: 10, 20 (maks 28)"))
-    # w = int(input("Skriv inn størrelse på brettet, eks: 10, 20 (maks 28)"))
 
-    if w > 28:
-        w = checkSize()
-    return w
+# funksjon som sørger henter input fra brukeren og sørger for at den ikke overstiger en gitt maksverdi
+def inputValidation(msg, maxVal, defaultVal):
+    try: 
+        a = int(input(msg))
+    except:
+        return defaultVal
 
-size = checkSize()
-width = size
-height = size
-if size > 14:
+    if a > maxVal:
+        a = inputValidation(msg, maxVal, defaultVal)
+    return a
+
+# får brukeren til å velge størrelse på brettet og setter variablene utifra det
+width = inputValidation("Choose width of the game (max 50), press enter for default", 50, 12)
+height = inputValidation("Choose height of the game (max 28), press enter for default", 28, 12)
+antallMiner = inputValidation(f'Choose how many mines (max {width*height})', width*height, 15)
+
+
+# velger scale utifra størrelsen på brettet
+if height > 14 or width > 25:
     scale = 2
 else:
     scale = 4
 
-# får brukeren til å velge vanskelighetsgrad
-
-#funksjon som sørger for at det ikke kan være flere miner enn ruter
-antallMiner = size
-def checkMines():
-    a = int(input(f'Velg antall miner (maks: {size*size})'))
-    if a > size*size:
-        a = checkMines()
-    return a
-antallMiner = checkMines()
 
 
-#initializer selve grafikk-programmet
+
+# initializer selve grafikk-programmet
 root = Tk()
 
-#antall markerte miner
+# antall markerte miner
 mineCounter = 0
+
+# arrayer som lagrer informasjonen om det synlige brettet (buttons) og
+# det usynlige brettet (arena)
 arena = []
 buttons = []
 
@@ -48,11 +47,12 @@ for i in range(height):
     arena.append([])
     buttons.append([])
 
-# fyller den "usynlige" arenaen med noen miner og resten nuller
+# fyller den arenaen med nuller
 for i in arena:
     for k in range(width):
             i.append(0)
 
+# plasserer det valgte antall miner randomly på brettet
 counter = 0
 while counter < antallMiner:
     y = math.floor(random.uniform(0, height))
@@ -61,7 +61,7 @@ while counter < antallMiner:
         arena[y][x] = "x"
         counter += 1
 
-# funksjon som finner antall miner rundt en boks
+# funksjon som finner antall miner rundt en rute
 def calcMines(x, y):
     num = 0
     for i in range(y-1, y+2):
@@ -77,10 +77,28 @@ for y in range(height):
         if arena[y][x] != "x":
             arena[y][x] = calcMines(x, y)
 
-# funksjon som markerer åpnede bokser slik at de ikke kan bli forsøkt åpnet igjen
+
+
+# en funksjon som kjøres dersom den åpnede ruta ikke har noen miner rundt
+# da åpnes automatisk alle ruter rundt, og sjekker om de igjen har noen 
+# miner rundt seg
+def open(x, y):
+    for i in range(y-1, y+2):
+        for j in range(x-1, x+2):
+            if (not(i==y and j==x)) and i >= 0 and i < height and j >= 0 and j < width and not isinstance(arena[i][j], str) and buttons[i][j]['text'] != "m":
+
+                openButton(j, i)
+
+                if arena[i][j] == "0":
+                    open(j, i)
+
+
+
+# funksjon som markerer åpnede ruter slik at de ikke kan bli forsøkt åpnet igjen
 # forhindrer en evig loop i den rekursive open-funksjonen
 def markAsOpened(x, y):
     arena[y][x] = str(arena[y][x])
+
 
 
 
@@ -100,7 +118,8 @@ def openAround(x, y):
                     leftClick(j, i)
 
 
-# funksjon som grafisk åpner bokser
+
+# funksjon som grafisk åpner ruter
 def openButton(x, y):
 
         number = arena[y][x]
@@ -108,6 +127,7 @@ def openButton(x, y):
             number = "-"
         buttons[y][x] = Button(root, text = number, width = scale, height = int(scale/2))
 
+        # legger til event for venstreklikk for de åpnede rutene
         if number != "-":
             buttons[y][x].bind('<Button-1>', lambda event, arg1=x, arg2=y : openAround(arg1, arg2))
 
@@ -115,8 +135,9 @@ def openButton(x, y):
         markAsOpened(x, y)
 
 
-# funksjonen som kjører når man venstreklikker på en boks
-# åpner opp den boksen man trykker på, men hvis det er en mine så taper man spillet
+# funksjonen som kjører når man venstreklikker på en rute
+# åpner opp den ruta man trykker på, men hvis det er en mine så taper man spillet
+# kan bare åpne dersom ruta ikke er markert
 def leftClick(x, y):
     global root
     if buttons[y][x]['text'] != "m":
@@ -125,9 +146,11 @@ def leftClick(x, y):
 
             if arena[y][x] == "0":
                 open(x, y)
+
         elif arena[y][x] == "x":
             print("Du Tapte")
 
+            #lager nytt vindu
             root.destroy()
             root = Tk()
             
@@ -136,10 +159,10 @@ def leftClick(x, y):
             restartBtn.grid(row=0, column=0)
 
 
-# funksjonen som kjører når man høyreklikker på en boks
-# markerer boksen man trykker på eller tar bort markeringen
+# funksjonen som kjører når man høyreklikker på en rute
+# markerer ruta man trykker på eller tar bort markeringen
 # det er meningen å markere der man tror det er miner, 
-# og når en boks er markert med en "m", så går det ikke
+# og når en rute er markert med en "m", så går det ikke
 # an å åpne den
 def rightClick(x, y):
     global root
@@ -153,11 +176,14 @@ def rightClick(x, y):
         mineCounter += 1
 
     if mineCounter == antallMiner:
+        # sjekker også om alle de markerte minene er på riktig sted
         for y in range(height):
             for x in range(width):
                 if buttons[y][x]["text"] == "m" and arena[y][x] != "x":
                     return False
-        #hvis funksjonen kommer seg hit så har man klart å markere alle minene riktig
+
+        # hvis funksjonen kommer seg hit så har man klart å markere alle minene riktig
+        # lager nytt vindu
         root.destroy()
         root = Tk()
         
@@ -167,31 +193,18 @@ def rightClick(x, y):
 
 
 # sørger for det grafiske i oppstarten av programmet
-# tegner inn blanke bokser som man kan trykke på
+# tegner inn blanke ruter som man kan trykke på
 def drawArena():
     for y in range(height):
         for x in range(width):
             buttons[y].append(Button(root, width = scale, height = int(scale/2), bg="#6699cc", fg="white"))
 
+            # legger til events for høyre og venstreklikk for alle rutene
             buttons[y][x].bind('<Button-1>', lambda event, arg1=x, arg2=y : leftClick(arg1, arg2))
             buttons[y][x].bind('<Button-3>', lambda event, arg1=x, arg2=y : rightClick(arg1, arg2))
             buttons[y][x].grid(row=y, column=x)
             
 drawArena()
-
-
-# en funksjon som kjøres dersom den åpnede boksen ikke har noen miner rundt
-# da åpnes automatisk alle bokser rundt, og sjekker om de igjen har noen 
-# miner rundt seg
-def open(x, y):
-    for i in range(y-1, y+2):
-        for j in range(x-1, x+2):
-            if (not(i==y and j==x)) and i >= 0 and i < height and j >= 0 and j < width and not isinstance(arena[i][j], str) and buttons[i][j]['text'] != "m":
-
-                openButton(j, i)
-
-                if arena[i][j] == "0":
-                    open(j, i)
 
 
 #kjører selve grafikk-programmet ved kjøring av koden
