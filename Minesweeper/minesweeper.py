@@ -38,7 +38,8 @@ antallMiner = checkMines()
 #initializer selve grafikk-programmet
 root = Tk()
 
-
+#antall markerte miner
+mineCounter = 0
 arena = []
 buttons = []
 
@@ -141,11 +142,29 @@ def leftClick(x, y):
 # og når en boks er markert med en "m", så går det ikke
 # an å åpne den
 def rightClick(x, y):
+    global root
+    global mineCounter
     if buttons[y][x]['text'] == "m":
         buttons[y][x]['text'] = ""
+        mineCounter -= 1
 
     elif buttons[y][x]['text'] == "":
         buttons[y][x]['text'] = "m"
+        mineCounter += 1
+
+    if mineCounter == antallMiner:
+        for y in range(height):
+            for x in range(width):
+                if buttons[y][x]["text"] == "m" and arena[y][x] != "x":
+                    return False
+        #hvis funksjonen kommer seg hit så har man klart å markere alle minene riktig
+        root.destroy()
+        root = Tk()
+        
+        restartBtn = Button(root, text="You Won \n \n Click to quit", width = 50, 
+        height = 20, bg="green", fg="white", font=("Times New Roman", 12, "bold"), command=lambda: root.destroy())
+        restartBtn.grid(row=0, column=0)
+
 
 # sørger for det grafiske i oppstarten av programmet
 # tegner inn blanke bokser som man kan trykke på
@@ -173,6 +192,7 @@ def open(x, y):
 
                 if arena[i][j] == "0":
                     open(j, i)
+
 
 #kjører selve grafikk-programmet ved kjøring av koden
 root.mainloop()
