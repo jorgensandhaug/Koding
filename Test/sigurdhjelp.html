@@ -1,0 +1,288 @@
+[13.51] Sigurd Efskind Salomonsen
+    
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>V 2018 Museum Oppgave 3</title>
+        <style>
+            body{
+                font-family: sans-serif;
+            }
+            #ramme{
+                position: absolute;
+                left: 25%;
+                width: 90%;
+                height: auto;
+                top: 50px;
+            }
+            #startTekst{
+                position: absolute;
+                left: 100px;
+                top: 10px;
+                height: auto;
+                width: auto;
+                font-size: 20px;
+            }
+            h3, #highscoreSystem{
+                color: dimgrey;
+                width: 670px;
+                text-align: center;
+            }
+            #bildeLag{
+                position: absolute;
+                width: 690px;
+                height: 125px;
+                text-align: center;
+                cursor: pointer;
+            }
+            #bildeTekstLag{
+                position: absolute;
+                top: 200px;
+                width: 670px;
+                height: 30px
+                align-content: center;
+            }
+            img{
+                height: 120px;
+                margin-right: 10px;
+                border: solid 1px dimgrey;
+            }
+            #btnLyd{
+                position: absolute;
+                top: 300px;
+                width: 660px;
+                background-color: darkgray;
+                margin-left: 15px;
+                border: 0;
+                color: white;
+                height: 30px;
+            }
+            #infoLag{
+                position: absolute;
+                text-align: center;
+                top: 340px;
+                width: 670px;
+            }
+
+
+            td{
+                width: 125px;
+                text-align: center;
+            }
+        </style>
+   
+
+
+​[13.51] Sigurd Efskind Salomonsen
+    
+</head>
+
+
+       <body>
+           <div id="ramme">
+                <div id="startTekstLag">
+                     <h3>Prøv deg på lyder og instrumenter. Gjetter du riktig?</h3>
+
+
+                    <div id="bildeLag"></div>
+                    <div id="bildeTekstLag">
+                        <table align="center"><tr id="rad"></tr></table>
+                       <p id="highscoreSystem"></p>
+                    </div>
+                    <div id="knappeLag">
+                        <button id="btnLyd">Spill instrumentlyd</button>
+                    </div>
+                </div>
+                <div id="infoLag">
+                    Antall forsøk: 0
+                </div>
+            </div>
+
+
+            <audio src="riktig.mp3" id="lydRiktig"></audio>
+            <audio src="feil.mp3" id="lydFeil"></audio>
+            <audio id="lydTilfeldig"></audio>
+
+
+            <script>
+                var bildeLag = document.getElementById("bildeLag");
+                var bildeTekstLag = document.getElementById("bildeTekstLag");
+                var rad = document.getElementById("rad");
+                var lydRiktig = document.getElementById("lydRiktig");
+                var lydFeil = document.getElementById("lydFeil");
+                var lydTilfeldig = document.getElementById("lydTilfeldig");
+                var infoLag = document.getElementById("infoLag");
+                var highscoreSystem = document.getElementById("highscoreSystem");
+
+
+
+                var bilde = ["fagott.jpg", "floyte.gif", "klarinett.jpg","obo.jpg", "valthorn.jpg"];
+                var tekst = ["FAGOTT", "FLØYTE", "KLARINETT","OBO", "VALTHORN"];
+                var instrumentlyd = ["fagottLyd.mp3","floyteLyd.mp3","klarinettLyd.mp3","oboLyd.mp3","valthornLyd.mp3"];
+                var klikkbar = [0,0,0,0,0];
+
+
+                var valgtBilde = [];
+                var valgtTekst = [];
+                var valgtInstrumentlyd = [];
+
+
+                var highscore = 1000; //Setter bare en highscore fra starten av, siden denne løsningen ikke skriver til fil/database
+                var tilfeldigLydIndeks;
+                var gjettet = true; //for å få til første gang
+                var spiltLyd = false;
+                var forsteGang = true;
+                var antRiktig = 0;
+                var antFeil = 0;
+                var antallForsok = 0;
+                var sjekkForsok = 1000;
+
+
+                opprettBilder();
+
+
+                function opprettBilder(){
+                    bildeLag.innerHTML = "";
+                    rad.innerHTML = "";
+                    highscoreSystem.innerHTML = "HIGHSCORE: " + highscore;
+                        for (var i=0; i<bilde.length; i++){
+                            bildeLag.innerHTML += '<img onclick="sjekkValg(' + i + ')" src="' + bilde[i] + '">';
+                            forsteGang = false;
+                        }
+
+
+                    for (var i=0; i<tekst.length; i++){
+                        rad.innerHTML += "<td>" + tekst[i] + "</td>";
+                    }
+                    infoLag.innerHTML = "Antall forsøk: " + antallForsok;
+                }
+
+
+                btnLyd.onclick = function(){
+                   spiltLyd = true;
+                   if (gjettet){
+                        tilfeldigLydIndeks = Math.floor(Math.random() * instrumentlyd.length);
+                        forrigeLyd = tilfeldigLydIndeks;
+                        gjettet = false;
+                   }
+                    else{
+                        tilfeldigLydIndeks = forrigeLyd;
+                    }
+
+
+                   lydTilfeldig.src = instrumentlyd[tilfeldigLydIndeks];
+                           lydTilfeldig.play();
+                }
+
+
+                function sjekkValg(valgtBildeIndeks){
+                    gjettet = true;
+
+
+                    if (spiltLyd){
+                        antallForsok++;
+                        infoLag.innerHTML = "Antall forsøk: " + antallForsok;
+
+
+                        if (valgtBildeIndeks == tilfeldigLydIndeks){
+                            antRiktig++;
+                            valgtBilde.push(bilde[valgtBildeIndeks]);
+                            valgtTekst.push(tekst[valgtBildeIndeks]);
+                            valgtInstrumentlyd.push(instrumentlyd[valgtBildeIndeks]);
+
+
+                            klikkbar[valgtBildeIndeks] = 1;
+
+
+                            bilde.splice(valgtBildeIndeks,1);
+                            instrumentlyd.splice(valgtBildeIndeks,1);
+                            tekst.splice(valgtBildeIndeks,1);
+                            lydRiktig.play();
+
+
+                            spiltLyd = false;
+                            opprettBilder();
+                        }
+                        else{
+                            antFeil++;
+                            lydFeil.play();
+                        }
+                    }
+
+
+                    if (bilde.length == 0){
+                        if (antFeil == 0){
+                            infoLag.innerHTML += "<br>Fantastisk, du greide å finne alle instumentene uten feil!";
+                        }
+                        else{
+                           infoLag.innerHTML += "<br>Du valgte feil instrument " + antFeil + " ganger."
+                        }
+
+
+                        if (antallForsok == sjekkForsok){
+                            infoLag.innerHTML += "<p>Du tangerte highscore!</p>";
+                        }
+                        else if (antallForsok < sjekkForsok){
+                            infoLag.innerHTML += "<p>Du slo den gamle highscoren!</p>";
+                            highscore = 1000 + 100-antallForsok;
+                            sjekkForsok = antallForsok;
+                        }
+
+
+                        gjettet = true;
+                        spiltLyd = false;
+                        forsteGang = true;
+                        antRiktig = 0;
+                        antFeil = 0;
+                        antallForsok = 0;
+
+
+                        bilde = valgtBilde;
+                        tekst = valgtTekst;
+                        instrumentlyd = valgtInstrumentlyd;
+
+
+                        valgtBilde = [];
+                        valgtTekst = [];
+                        valgtInstrumentlyd = [];
+
+
+                        highscoreSystem.innerHTML = "HIGHSCORE: " + highscore;
+                        infoLag.innerHTML +='<p><button onclick="opprettBilder()">Ny runde</button></p>';
+                    }
+
+
+                }
+            </script>
+    </body>
+</html>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
