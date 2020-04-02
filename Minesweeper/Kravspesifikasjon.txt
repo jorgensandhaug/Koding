@@ -1,0 +1,4 @@
+Spiller skal kunne velge størrelse på brett, samt antall miner før spillet starter
+Spiller skal kunne trykke på rutene med både høyre- og venstreklikk, høyre for å markere/fjerne markering, venstre for å åpne rute
+Når spiller åpner rute skal programmet sjekke om ruten er en mine eller ikke, hvis ikke skal programmet åpne ruten grafisk
+Når spiller taper/vinner, skal spillet avsluttes og bruker skal få beskjed om at han/hun har tapt/vunnet
