@@ -10,6 +10,7 @@ def inputValidation(msg, maxVal, defaultVal):
     try: 
         a = int(input(msg))
     except:
+        # hvis bruker kun trykker på enter uten å skrive inn noe
         return defaultVal
 
     if a > maxVal:
@@ -19,10 +20,10 @@ def inputValidation(msg, maxVal, defaultVal):
 # får brukeren til å velge størrelse på brettet og setter variablene utifra det
 width = inputValidation("Choose width of the game (max 50), press enter for default", 50, 12)
 height = inputValidation("Choose height of the game (max 28), press enter for default", 28, 12)
-antallMiner = inputValidation(f'Choose how many mines (max {width*height})', width*height, 15)
+antallMiner = inputValidation(f'Choose how many mines (max {width*height}), press enter for default', width*height, math.floor(width*height/10))
 
 
-# velger scale utifra størrelsen på brettet
+# velger scale utifra størrelsen på brettet, for at vinduet ikke skal bli for lite når bruker velger få ruter, og ikke for stort når bruker velger mange ruter
 if height > 14 or width > 25:
     scale = 2
 else:
@@ -82,6 +83,19 @@ for y in range(height):
 # en funksjon som kjøres dersom den åpnede ruta ikke har noen miner rundt
 # da åpnes automatisk alle ruter rundt, og sjekker om de igjen har noen 
 # miner rundt seg
+
+#pseudokode for open-funksjonen
+
+# funksjon open(x, y):
+#    for loop fra y-1 til og med y+1 med variabel i:
+#        for loop fra x-1 til og med x+1 med variabel j:
+#            hvis  ikke(i==y og j==x) og i >= 0 og i < height og j >= 0 og j < width og ikke (markert som åpnet) og ikke (markert som åpnet):
+
+#                åpne rute
+
+#                hvis den nye ruten også har verdi 0:
+#                    kjør open-funksjonen igjen med parameterene (j, i)
+
 def open(x, y):
     for i in range(y-1, y+2):
         for j in range(x-1, x+2):
