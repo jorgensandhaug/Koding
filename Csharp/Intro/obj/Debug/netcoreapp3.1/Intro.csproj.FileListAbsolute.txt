@@ -1,0 +1,13 @@
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.exe
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.deps.json
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.runtimeconfig.json
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.runtimeconfig.dev.json
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.dll
+D:\GitHub\Koding\Csharp\Intro\bin\Debug\netcoreapp3.1\Intro.pdb
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.csprojAssemblyReference.cache
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.csproj.CoreCompileInputs.cache
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.AssemblyInfoInputs.cache
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.AssemblyInfo.cs
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.dll
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.pdb
+D:\GitHub\Koding\Csharp\Intro\obj\Debug\netcoreapp3.1\Intro.genruntimeconfig.cache

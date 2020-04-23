@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const partiProsent = {
+            "Rødt": 3.7,
+            "SV": 5,
+            "AP": 23,
+            "SP": 4.2,
+            "MDG": 3.8,
+            "KrF": 2.8,
+            "V": 6.7,
+            "H": 28.2,
+            "FrP": 15.6,
+            "PIR": 4.3
+            }
+        
+        const borgRegjering = ["H", "FrP", "KrF", "V"]
+        const rodRegjering = ["AP", "SV", "SP"]
+        let prosentBorg = 0
+        let prosentRod = 0
+        borgRegjering.forEach( parti =>{
+            prosentBorg += partiProsent[parti]
+        })
+        rodRegjering.forEach( parti =>{
+            prosentRod += partiProsent[parti]
+        })
+        const prosentDiff = Math.abs(prosentBorg-prosentRod).toFixed(1)
+        const bestBlokk = prosentBorg > prosentRod ? {navn: "Borgerlig", prosent: prosentBorg, partier: borgRegjering} : {navn: "Rod-grønn", prosent: prosentRod, partier: rodRegjering}
+        console.log(`Beste partiblokk er ${bestBlokk.navn}, med ${bestBlokk.prosent}% av stemmene. Denne blokken består av ${bestBlokk.partier}. Regjeringen fikk ca ${prosentDiff}% flere stemmer enn den konkurrerende regjeringen.`)
+
+    </script>
+</body>
+</html>
