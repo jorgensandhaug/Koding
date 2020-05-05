@@ -38,8 +38,9 @@ function frameLooper(){
     const lowestFreq = fbc_array[0]
     const r = 70 + lowestFreq
 
-    c.fillStyle = "red"
+    
     for(let i = 0; i < 360; i++){
+        c.fillStyle = `hsl(${i}, 50%, 50%)`
         const barHeight = fbc_array[Math.floor(i/3+100)]
         const a = i/180 *Math.PI - Math.PI/2
         const pos = {
